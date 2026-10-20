@@ -3,35 +3,48 @@ title: "Curriculum Vitae"
 permalink: /cv/
 ---
 
+**Junseo Kim**
+
+[juns0217@kaist.ac.kr](mailto:juns0217@kaist.ac.kr) · [thisisjskim.github.io](https://thisisjskim.github.io/) · [010-4484-6339](tel:+821044846339)
+
 ## Education
 
-### KAIST — School of Electrical Engineering
+### Busan Il Science High School (BSIS)
 
-<p class="cv-date">2022 – Present</p>
+<p class="cv-date">2020–2021</p>
 
-Undergraduate student in Electrical Engineering.
+### Korea Advanced Institute of Science and Technology (KAIST)
 
-## Research Experience
+Undergraduate, School of Electrical Engineering
 
-### Undergraduate Individual Research
+<p class="cv-date">2022–Present</p>
 
-<p class="cv-date">December 2024 – February 2025 · KAIST</p>
+## Relevant Coursework
 
-Individual research in Professor 김경민's laboratory, including literature study on semiconductor devices and neuron-inspired behavior.
+- Semiconductor Device
+- Electronic Circuits
+- Digital System Design
 
 ## Research Interests
 
-- Energy-efficient AI accelerators and NPUs
-- Dataflow, data reuse, and memory hierarchy
-- Processing-in-memory and computing-in-memory
+- Energy-efficient neural processing units and AI accelerator architectures
+- Data reuse and memory hierarchies for deep learning workloads
+- Processing-in-memory and computing-in-memory architectures
 
-## Technical Skills
+## Undergraduate Research Experience
 
-- **Python, C, Verilog:** basic familiarity
-- **MATLAB:** coursework experience
+### FuST Lab, KAIST — Undergraduate Individual Research
+
+Advisor: Prof. Kyungmin Kim
+
+<p class="cv-date">December 2024–February 2025</p>
+
+- Reviewed literature on Mott-device-based thermal computing and its applications to neuromorphic computing.
 
 ## Independent Study
 
-Paper-based study of AI accelerator architectures and memory-centric computing, including Eyeriss, TPU, DaDianNao, and PIM/CIM overview papers.
+### AI Accelerator Architectures and In-Memory Computing
 
-[Browse Paper Notes →](/paper-notes/)
+- Studied accelerator architectures through papers including TPU, DaDianNao, and Eyeriss, focusing on dataflow, memory organization, and data movement.
+- Examined PIM/CIM approaches and their trade-offs in bandwidth, precision, and energy efficiency.
+- Wrote paper summaries and study notes, available under [Paper Notes](/paper-notes/).
