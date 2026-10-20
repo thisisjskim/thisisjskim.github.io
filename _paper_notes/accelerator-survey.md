@@ -174,18 +174,19 @@ Hardware에서 발생하는 가장 큰 문제 중 하나는 off-chip DRAM access
 What is FPGAs?
 
   FPGAs는 만들어진 hardware 내부에 computation 기능을 구현할 수 있는 장치가 있어서, 사용자의 설정을 통해 원하는 회로 동작을 구성할 수 있는 특징을 가진다. 즉, FPGAs는 특정 workload에 맞춘 computation structure를 구현할 수 있고, workload의 여러 요구에 대응하기 용이한 장점을 가지고 있다.
-  FPGA 기반 accelerator는 크게 3가지로 구성된다
-    1. General-purpose processor
+FPGA 기반 accelerator는 크게 3가지로 구성된다
 
-        &#58; software workload를 시행하는 역할
-
-    2. Computational module
-
-        &#58; DL operations을 담당한다.(convolution, pooling, softmax function)
-
-    3. Memory hierarchy
-
-        &#58; external DRAM과의 data movement를 효율적으로 구성하기 위한 장치.
+<ol>
+<li>General-purpose processor
+<p>&#58; software workload를 시행하는 역할</p>
+</li>
+<li>Computational module
+<p>&#58; DL operations을 담당한다.(convolution, pooling, softmax function)</p>
+</li>
+<li>Memory hierarchy
+<p>&#58; external DRAM과의 data movement를 효율적으로 구성하기 위한 장치.</p>
+</li>
+</ol>
 
   FPGAs는 edge application에서 주로 사용되었지만, 경우에 따라 datacenter에서도 사용된다. 최근 이러한 FPGAs의 throughput을 높이며 최적화 하기 위한 연구가 관심을 받고 있으며, CGRAs 라는 대안이 소개된다.
 
