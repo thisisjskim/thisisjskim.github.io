@@ -28,3 +28,6 @@ html{font-size:17px;scroll-behavior:smooth}body{padding-top:0;padding-bottom:0;f
 .note-content .notion-body td p:first-child,.note-content .notion-body th p:first-child{margin-top:0}
 .note-content .notion-body td p:last-child,.note-content .notion-body th p:last-child{margin-bottom:0}
 @media(max-width:640px){.note-content .notion-columns{flex-direction:column;gap:.5rem}.note-content .notion-column{width:100%;flex:auto!important}}
+/* The theme floats section elements; keep the end navigation below the review. */
+.note-page .note-content{float:none;width:100%}
+.note-page .note-end{clear:both}
