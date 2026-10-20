@@ -1,0 +1,17 @@
+---
+layout: default
+---
+<div id="main" role="main">{% include sidebar.html %}
+<article class="page note-page" lang="ko">
+<div class="page__inner-wrap">
+<header><a class="back-link" href="{{ '/paper-notes/' | relative_url }}">← All Paper Notes</a>
+<p class="eyebrow">PAPER NOTE {% if page.note_status == 'in-progress' %}<span class="status-badge">In progress</span>{% endif %}</p>
+<h1 class="page__title">{{ page.title | escape }}</h1>
+<p class="paper-byline">{{ page.paper_authors | escape }}<br><i>{{ page.paper_venue | escape }}</i> · {{ page.paper_year }}</p>
+<div class="note-actions"><a href="{{ page.paper_url }}">Original paper ↗</a><span>Note updated <time datetime="{{ page.note_updated }}">{{ page.note_updated }}</time></span></div>
+<p class="note-disclaimer">논문을 읽으며 작성한 개인 학습 노트입니다. 그림과 연구 결과는 원 논문의 저자에게 귀속됩니다.</p>
+</header>
+<details class="note-toc" open><summary>Contents / 목차</summary><nav aria-label="Table of contents"><ol>{% for entry in page.note_toc %}<li class="toc-level-{{ entry.depth }}"><a href="#{{ entry.id }}">{{ entry.title | escape }}</a></li>{% endfor %}</ol></nav></details>
+<section class="page__content note-content">{{ content }}</section>
+<nav class="note-end" aria-label="End of note"><a href="{{ '/paper-notes/' | relative_url }}">← Back to Paper Notes</a><a href="#main">Back to top ↑</a></nav>
+</div></article></div>

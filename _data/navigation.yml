@@ -1,0 +1,7 @@
+main:
+- title: About
+  url: /
+- title: Paper Notes
+  url: /paper-notes/
+- title: CV
+  url: /cv/

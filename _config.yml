@@ -1,0 +1,78 @@
+locale: en-US
+site_theme: default
+title: Junseo Kim
+title_separator: "|"
+name: Junseo Kim
+description: KAIST electrical engineering undergraduate exploring energy-efficient
+  AI accelerators, data reuse, and processing-in-memory.
+url: https://thisisjskim.github.io
+baseurl: ''
+repository: thisisjskim/thisisjskim.github.io
+author:
+  name: Junseo Kim
+  bio: Undergraduate Student
+  employer: KAIST · Electrical Engineering
+  email: null
+breadcrumbs: false
+future: false
+atom_feed:
+  hide: true
+comments:
+  provider: false
+analytics:
+  provider: false
+include:
+- _pages
+exclude:
+- Gemfile
+- Gemfile.lock
+- README.md
+- LICENSE
+- AGENTS.md
+- scripts
+- docs
+- vendor
+- node_modules
+- package.json
+- package-lock.json
+- package-lock.json
+- assets/js/_main.js
+- assets/js/plugins
+- assets/js/vendor
+encoding: utf-8
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  hard_wrap: false
+  auto_ids: true
+  syntax_highlighter: rouge
+collections:
+  paper_notes:
+    output: true
+    permalink: /paper-notes/:path/
+defaults:
+- scope:
+    path: ''
+    type: pages
+  values:
+    layout: single
+    author_profile: true
+- scope:
+    path: ''
+    type: paper_notes
+  values:
+    layout: paper-note
+    author_profile: true
+sass:
+  sass_dir: _sass
+  style: compressed
+timezone: Asia/Seoul
+plugins:
+- jekyll-sitemap
+- jekyll-redirect-from
+compress_html:
+  clippings: all
+  ignore:
+    envs:
+    - development
