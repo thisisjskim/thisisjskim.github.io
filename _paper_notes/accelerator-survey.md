@@ -7,7 +7,7 @@ paper_venue: ACM Computing Surveys
 paper_year: 2025
 paper_url: https://doi.org/10.1145/3729215
 note_updated: '2026-10-20'
-note_status: in-progress
+note_status: complete
 excerpt: GPU·TPU·ASIC과 PIM/CIM의 설계 전략을 데이터 이동, sparsity, energy efficiency 관점에서 연결했습니다.
 topics:
 - Survey
@@ -52,7 +52,7 @@ note_toc:
   title: 2.4.3 Neuromorphic Accelerators
 - depth: 1
   id: section-13
-  title: 3. Thought
+  title: 3. Thought & Summary
 ---
 
 # 1. Introduction
@@ -386,9 +386,9 @@ CIM은 memory wall, compute wall을 모두 해결하기 위한 방안으로서, 
 
 뒤에서도 이와 비슷한 내용을 다룬다. Analog CIM은 MVM-oriented workloads를 처리할 때는 효율적이나, low-reuse kernels, batch normalization, activation과 같은 연산에는 비효율적이라고 설명한다.
 
-⇒ 이러한 문제(Amdahl’s effect)를 완화하기 위해, PCM-based accelerator와 general-purpose core를 결합한 analog-digital edge system을 제안한다.
+⇒ 이러한 문제를 완화하기 위해, PCM-based accelerator와 general-purpose core를 결합한 analog-digital edge system을 제안한다.
 
-이를 통해, 특정 연산을 가속해도 가속이 되지 않은 연산이 또 다른 병목 현상을 발생시킨다는 것, 그리고 이를 해결하기 위한 방법으로 digital core와의 역할 분담을 한다는 전략 등의 사고를 확장해나갈 수 있었다.
+이를 통해, 특정 연산을 가속해도 가속이 되지 않은 연산이 또 다른 병목 현상을 발생한다는 것, 그리고 이를 해결하기 위한 방법으로 digital core와의 역할 분담을 한다는 전략 등의 사고를 확장해나갈 수 있었다.
 
 ### 2.4.3 Neuromorphic Accelerators
 {: #section-12 }
@@ -467,43 +467,47 @@ neuromorphic chip의 설계에서는 **versatility, efficiency**를 함께 고�
 </tr>
 </table>
 
-# 3. Thought
+# 3. Thought & Summary
 {: #section-13 }
 
+아래 표는 survey에서 다룬 주요 문제와 해결 전략, 그리고 그에 따른 trade-off를 정리한 것이다. 이러한 전략은 특정 chip에만 국한되지 않으며, 다양한 accelerator의 성능과 energy efficiency를 높이기 위한 공통적인 접근법이다.
+
 <table>
+
 <tr>
 <td markdown="span">Problem</td>
-<td markdown="span">지금까지 읽은 전략·사례</td>
-<td markdown="span">Trade-off</td>
+<td markdown="span">해결 방법, 전략</td>
+<td markdown="span">새롭게 제시되는 문제, Trade-off</td>
 </tr>
 <tr>
-<td markdown="span">Off-chip data movement</td>
-<td markdown="span">DaDianNao의 on-chip weight 저장, Eyeriss의 data reuse, PIM·CIM</td>
-<td markdown="span">저장 용량, 내부 data movement, 연산 자원에 대한 데이터 공급</td>
+<td markdown="span">**Off-chip data movement**</td>
+<td markdown="span">stationary strategies 사용,<br />DaDianNao의 on-chip weight 저장, Eyeriss의 data reuse, PIM,CIM</td>
+<td markdown="span">저장 용량, internal data movement,</td>
 </tr>
 <tr>
-<td markdown="span">데이터 표현·연산 비용</td>
-<td markdown="span">Low precision, mixed precision</td>
-<td markdown="span">Accuracy 요구와 지원 가능한 수치 형식</td>
+<td markdown="span">**높은 bit 수로 인해 발생하는 cost**</td>
+<td markdown="span">Quantization; Low precision, mixed precision, and cluster index</td>
+<td markdown="span">Accuracy가 줄어들거나, 복잡한 structure 구성을 요구한다.</td>
 </tr>
 <tr>
-<td markdown="span">불필요한 계산</td>
-<td markdown="span">Zero skipping, 반복 weight 활용</td>
+<td markdown="span">**sparse matrix의 불필요한 연산 발생**</td>
+<td markdown="span">Zero skipping , Compression</td>
 <td markdown="span">압축 정보 처리, scheduling, PE load imbalance</td>
 </tr>
 <tr>
-<td markdown="span">Analog 결과 변환 비용</td>
-<td markdown="span">Neural-PIM의 analog shift-and-add</td>
-<td markdown="span">Conversion을 줄이면서 필요한 accuracy를 유지하는 문제</td>
+<td markdown="span">**Analog data의 잦은 ADC/DAC 사용으로 인한 cost 발생.**</td>
+<td markdown="span">accumulation을 analog-domain에서 수행하는 방법을 사용</td>
+<td markdown="span">low accuarcy, analog non-ideality</td>
 </tr>
 <tr>
-<td markdown="span">특정 연산만 가속했을 때의 전체 병목</td>
-<td markdown="span">PCM accelerator와 digital core의 역할 분담</td>
-<td markdown="span">연산 배정과 자원 사이의 데이터 전달</td>
-</tr>
-<tr>
-<td markdown="span">다양한 동작 지원과 전용화 사이의 균형</td>
-<td markdown="span">SpiNNaker, ODIN·MorphIC, Loihi</td>
-<td markdown="span">Versatility와 energy·area efficiency의 균형</td>
+<td markdown="span">**일부 연산만 가속하여 남은 연산이 전체 성능을 낮추는 문제**</td>
+<td markdown="span">PCM accelerator와 digital core를 결합한다.</td>
+<td markdown="span">데이터 전달 비용, 처리 속도 차이로 인한 대기</td>
 </tr>
 </table>
+
+본 논문을 통해 다양한 DNN accelerator의 종류와 설계 목적을 살펴보고, 기존에 읽었던 논문들에서 공통적으로 나타나는 문제와 해결 전략을 연결할 수 있었다. Accelerator마다 구조와 목적에 따라 접근 방식은 다르지만, data movement를 줄이거나 quantization을 활용하는 등 성능과 energy efficiency를 높이기 위한 전략을 공유하고 있음을 확인할 수 있었다.
+
+이를 통해 특정 accelerator를 설계할 때 어떤 문제와 조건을 고려해야 하는지, 이를 해결하기 위해 기존 연구에서 어떤 방법을 제시했는지 살펴볼 수 있었다. 또한 같은 문제라도 workload의 특성과 설계 조건에 따라 해결 방법이 달라질 수 있음을 알게 되었다. 이 survey를 통해 주어진 조건에서 accelerator를 설계할 때 고려해야 할 기본적인 지식과 관점을 넓힐 수 있었다.
+
+인상 깊게 보았던 주제는 “Quantization”이다. 많은 accelerator가 quantization을 적극적으로 도입하여 energy efficiency를 높이려는 접근을 사용하고 있음을 확인할 수 있었다. 또한 quantization에도 다양한 방법이 존재한다는 점을 알게 되었고, 이를 어떻게 구현하는지, quantization으로 인한 accuracy 감소를 어떻게 줄일 수 있는지 더 학습해보고 싶었다.
