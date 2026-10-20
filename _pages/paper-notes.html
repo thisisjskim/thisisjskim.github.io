@@ -7,6 +7,11 @@ redirect_from:
 <p class="collection-intro">Personal reading notes on AI accelerator architectures, data movement, and in-memory computing.</p>
 <p class="collection-intro" lang="ko">관심 있는 논문을 읽고, 핵심 구조와 동작 원리를 정리한 기록입니다.</p>
 <ul class="note-list">
-{% assign notes = site.paper_notes | sort: 'note_updated' | reverse %}
-{% for note in notes %}{% include note-list-item.html note=note %}{% endfor %}
+{% for note_url in site.data.paper_note_order %}
+{% assign note = site.paper_notes | where: 'url', note_url | first %}
+{% if note %}{% include note-list-item.html note=note %}{% endif %}
+{% endfor %}
+{% for note in site.paper_notes %}
+{% unless site.data.paper_note_order contains note.url %}{% include note-list-item.html note=note %}{% endunless %}
+{% endfor %}
 </ul>
