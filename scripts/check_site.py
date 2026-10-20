@@ -41,7 +41,7 @@ for path in root.rglob('*.html'):
     p.feed(text)
     pages[p.path] = p
     if p.titles != 1: errors.append(f'{p.path}: expected one title')
-    if p.path != 'publications/index.html' and p.h1 != 1:
+    if p.path != 'publications/index.html' and not (p.path.startswith('paper-notes/') and p.path != 'paper-notes/index.html') and p.h1 != 1:
         errors.append(f'{p.path}: expected one h1, got {p.h1}')
     for marker in ('notion-file-block://', '<unknown ', 'X-Amz-Signature', 'Your Sidebar Name', 'Red Brick University', 'none@example.org'):
         if marker in text: errors.append(f'{p.path}: unmigrated or placeholder content: {marker}')

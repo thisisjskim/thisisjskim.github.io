@@ -94,17 +94,17 @@ note_toc:
   title: 6. Thought
 ---
 
-## 1. Introduction
+# 1. Introduction
 {: #section-1 }
 
 > CNN computation에서 요구하는 data의 양이 상당하다. 이는 data movement 과정에서 소모되는 power의 양이 computation에 비해 더 높다는 뜻이고, CNN accelerator의 throughput, energy efficiency를 높이기 위해서는 data movement를 최대한 줄여야 한다. 이러한 관점에서 Eyeriss는 off-chip DRAM access를 줄일 수 있는 dataflow인 Row Stationary(RS)를 소개한다. 그 외에도 Compression, Data gating(zero data 처리) 등의 기법을 활용한다. 이 논문의 핵심 쟁점은 CNN의 어떤 data를 어떻게 reuse했는지, data가 어떻게 움직이는지이다.
 
-## 2. Problem
+# 2. Problem
 {: #section-2 }
 
 이전의 많은 연구에서, CNN Accelerators는 simulation results로만 발표되었다는 한계가 존재한다. 또한, 이들은 system energy efficiency에 결정적인 요소인 off-chip DRAM access(data movement)를 어떻게 처리할지에 대한 설명이 부족하다. 이에, Eyeriss는 실제로 fabricated된 CNN accelerator를 구현하여, “actual” high throughput과 CNN Accelerator, off-chip DRAM을 포함한 전체 시스템에서의 energy efficiency를 최적화 하였다.
 
-## 3. Core Idea
+# 3. Core Idea
 {: #section-3 }
 
 Eyeriss는 크게 아래 네 가지를 중점적으로 보면 좋다.
@@ -118,10 +118,10 @@ Eyeriss는 크게 아래 네 가지를 중점적으로 보면 좋다.
 4. **Run-Length Compression(RLC), PE data gating**
   ⇒ Compression을 통한 data movement를 줄이는 방법과, “0” data를 효율적으로 처리하는 기법
 
-## 4. Architectures & Computation Methods
+# 4. Architectures & Computation Methods
 {: #section-4 }
 
-### 4.1 Architecture Overall
+## 4.1 Architecture Overall
 {: #section-5 }
 
 <figure><img src="/images/papers/eyeriss/01.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -134,33 +134,39 @@ DRAM과의 통신을 담당하는 Link Clock, chip의 processing을 담당하는
 
 System은 크게 off-chip DRAM ↔ GLB 사이의 통신, 그리고 NoC를 통한 GLB ↔ PE array 사이의 통신으로 나뉜다. 출력 단계에서 ReLU, RLC CODEC module이 통과된다.
 
-### 4.2 Energy-Efficient Feature
+## 4.2 Energy-Efficient Feature
 {: #section-6 }
 
 Energy-efficiency를 높이기 위해 RS dataflow를 통한 data reuse 기법. 주어진 dataflow에 맞게 data를 mapping하는 것을 도와주는 NoC, 마지막으로 data movement과정에서 Compression을 통해 bandwidth의 부담을 줄여주는 RLC기법 및 “0” data를 효율적으로 처리해주는 data gating 방법 등이 소개된다.
 
-#### 4.2.1 Row Stationary(RS)
+### 4.2.1 Row Stationary(RS)
 {: #section-7 }
 
 RS dataflow는 모든 data type(ifmap, filter, psums/ofmap)에 대해서 data movement를 최소화한다. DRAM, GLB와의 접근을 최소화하고 data reuse를 극대화 하는 것에 초점을 맞춘다. CNN에서 크게 3가지의 data reuse의 형태가 존재한다.
 
 1. **Convolutional Reuse**
-  : 동일한 ifmap plane에서 filter weight가 reused된다. 이때 filter weight는 E<span class="math-inline" markdown="0">\(\times\)</span>F만큼(ofmap plane의 크기) 그리고 ifmap plane의 하나의 pixel data는 보통 R<span class="math-inline" markdown="0">\(\times\)</span>S만큼(filter의 크기) reused된다. 
+
+    &#58; 동일한 ifmap plane에서 filter weight가 reused된다. 이때 filter weight는 E<span class="math-inline" markdown="0">\(\times\)</span>F만큼(ofmap plane의 크기) 그리고 ifmap plane의 하나의 pixel data는 보통 R<span class="math-inline" markdown="0">\(\times\)</span>S만큼(filter의 크기) reused된다. 
+
 2. **Filter Reuse**
-  : filter weight는 한 batch에 포함된 N개의 ifmap에 반복해서 사용된다.
+
+    &#58; filter weight는 한 batch에 포함된 N개의 ifmap에 반복해서 사용된다.
+
 3. **Ifmap Reuse**
-  : ifmap의 pixel data는 M개의 filter와의 연산에서 반복되어 사용된다.
+
+    &#58; ifmap의 pixel data는 M개의 filter와의 연산에서 반복되어 사용된다.
+
 
 여기서 추가로 psum의 movement를 최소화 하는 관점을 생각할 수 있다. 즉 하나의 output에 속하는 곱셈 결과를 계속 더해가는 방법이다. Ofmaps의 하나의 pixel data를 구하기 위해서는 <span class="math-inline" markdown="0">\(C\times R\times S\)</span>번의 MAC operations이 필요하다. 
 
 그러나 ifmap이나 weight의 재사용을 최대화하는 계산 순서에서는 서로 다른 output의 psum이 생성되므로, 여러 psum을 유지해야 한다. 따라서 RS는 이러한 재사용과 psum accumulation을 함께 고려한다.
 
-##### 4.2.1.1 1-D Convolution Primitive in a PE
+#### 4.2.1.1 1-D Convolution Primitive in a PE
 {: #section-8 }
 
 Primitive operation은 filter weights 한 행과 ifmap values 한 행으로 psum values를 만드는 것이다. 각각의 PE는 convolution data reuse, psum accumulation을 위한 PE 내부의 local spad를 사용한다. 1-D convolution primitive에서 PE의 spad의 capacity는 filter의 크기에만 의존하며 filter의 한 행의 크기인(S), filter에 대응되는 ifmap sliding window size(S) 그리고 psum을 저장할 공간 한 개 만큼 필요하다.
 
-##### 4.2.1.2 2-D Convolution PE set
+#### 4.2.1.2 2-D Convolution PE set
 {: #section-9 }
 
 <figure><img src="/images/papers/eyeriss/02.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -173,7 +179,7 @@ Primitive operation은 filter weights 한 행과 ifmap values 한 행으로 psum
 
 기본적으로 위의 3가지의 경우의 reused되는 경로를 이해하면 된다.
 
-##### 4.2.1.3 PE Set Mapping
+#### 4.2.1.3 PE Set Mapping
 {: #section-10 }
 
 <figure><img src="/images/papers/eyeriss/03.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -183,26 +189,36 @@ Primitive operation은 filter weights 한 행과 ifmap values 한 행으로 psum
 그러나 PE Set mapping을 할 때 주의해야할 경우 2가지가 존재한다.
 
 1. PE Set이 PE array(168개)보다 더 많은 PE를 가지는 경우
-  : 이 경우는 Fig 5의 CONV1에 해당하는 예시를 통해 확인할 수 있다. CONV1는 11 <span class="math-inline" markdown="0">\(\times\)</span> 55 = 605개의 PE가 필요하다. 그래서 ofmaps row를 나누어서 처리한다. 이 방법을 strip-mined라고 부르며, 논문에서는 11 <span class="math-inline" markdown="0">\(\times\)</span> 7의 크기로 나누어서 처리한다.
+
+    &#58; 이 경우는 Fig 5의 CONV1에 해당하는 예시를 통해 확인할 수 있다. CONV1는 11 <span class="math-inline" markdown="0">\(\times\)</span> 55 = 605개의 PE가 필요하다. 그래서 ofmaps row를 나누어서 처리한다. 이 방법을 strip-mined라고 부르며, 논문에서는 11 <span class="math-inline" markdown="0">\(\times\)</span> 7의 크기로 나누어서 처리한다.
+
 2. PE Set이 PE array보다는 적은 PE를 가지지만, Width 또는 Height가 PE array를 벗어난 경우
   \*width(ofmaps row)가 더 큰 경우만 지원한다. Filter row의 크기가 더 큰 경우는 Eyeriss에서 지원하지 않는다. (=높이가 12를 넘는 경우를 지원하지 않음)
-  : 이 경우는 Fig 5의 CONV2에 해당하는 예시를 통해 확인할 수 있다. CONV2는 5 <span class="math-inline" markdown="0">\(\times\)</span> 27 = 135개의 PE가 필요하다. PE array보다는 적은 PE를 가지지만, width의 크기가 array의 크기를 초과한다. 이를 해결하기 위해, 5 <span class="math-inline" markdown="0">\(\times\)</span> 13, 5 <span class="math-inline" markdown="0">\(\times\)</span> 14의 PE segments 두 개로 분리하여, array에 mapping하는 strategy를 사용한다.
+
+    &#58; 이 경우는 Fig 5의 CONV2에 해당하는 예시를 통해 확인할 수 있다. CONV2는 5 <span class="math-inline" markdown="0">\(\times\)</span> 27 = 135개의 PE가 필요하다. PE array보다는 적은 PE를 가지지만, width의 크기가 array의 크기를 초과한다. 이를 해결하기 위해, 5 <span class="math-inline" markdown="0">\(\times\)</span> 13, 5 <span class="math-inline" markdown="0">\(\times\)</span> 14의 PE segments 두 개로 분리하여, array에 mapping하는 strategy를 사용한다.
+
 
 그 외에, CONV3, CONV4&5는 PE array에 배치하기 쉽다. 오히려 3 <span class="math-inline" markdown="0">\(\times\)</span> 13이라는 작은 크기로 인해, 내부에 4개의 PE set를 형성할 수 있다. 이는 후에 다룰 Dimension beyond 2-D in PE array에서 살펴본다.
 
-##### 4.2.1.4 Dimensions Beyond 2-D in PE Array
+#### 4.2.1.4 Dimensions Beyond 2-D in PE Array
 {: #section-11 }
 
 Fig.1에서 보여지는 CNN operation에서 요구하는 computation의 양은 3차원의 형태를 띈다. Batch size(N), number of channel(C), number of filter(M) 이 세 가지의 additional dimension이 존재한다. N, C, M 중 하나를 변화시키고 나머지 두 개의 차원을 고정하면 2D convolution이 사용된다.
 
 1. **Varying Batch(ifmap)**
-  : Channel, filter는 고정된 채 ifmap만 달라지며 psum을 구한다. 여러 ofmap의 immediate values가 결과로 도출된다. ⇒ filter reuse
-2. **Varying filters**
-  : Ifmap, channel는 고정된 채 filters만 달라지며 psum을 구한다. 하나의 ofmap의 서로 다른 channel에 대한 psum이 결과로 도출된다. ⇒ ifmap reuse
-3. **Varying Channels**
-  : ifmap, filters는 고정된 채 channel만 달라지며 psum을 구한다. 이는 하나의 ofmap의 동일한 channel, 동일한 pixel에 대한 psum이 순차적으로 도출된다. 결과로 나온 psum을 바로 합쳐도 문제가 되지 않는다. ⇒ psum accumulation
 
-##### 4.2.1.5 Multiple 2-D Convolutions in a PE set
+    &#58; Channel, filter는 고정된 채 ifmap만 달라지며 psum을 구한다. 여러 ofmap의 immediate values가 결과로 도출된다. ⇒ filter reuse
+
+2. **Varying filters**
+
+    &#58; Ifmap, channel는 고정된 채 filters만 달라지며 psum을 구한다. 하나의 ofmap의 서로 다른 channel에 대한 psum이 결과로 도출된다. ⇒ ifmap reuse
+
+3. **Varying Channels**
+
+    &#58; ifmap, filters는 고정된 채 channel만 달라지며 psum을 구한다. 이는 하나의 ofmap의 동일한 channel, 동일한 pixel에 대한 psum이 순차적으로 도출된다. 결과로 나온 psum을 바로 합쳐도 문제가 되지 않는다. ⇒ psum accumulation
+
+
+#### 4.2.1.5 Multiple 2-D Convolutions in a PE set
 {: #section-12 }
 
 여기서 PE의 spad size가 매우 크다면, PE가 여러개의 2-D convolutions을 서로 다른 filters, channels에 대해서 수행할 수 있다.
@@ -216,7 +232,7 @@ Fig.1에서 보여지는 CNN operation에서 요구하는 computation의 양은 
 2. <span class="math-inline" markdown="0">\(q \times S\)</span>: filter와 match되는 ifmap의 pixel data
 3. <span class="math-inline" markdown="0">\(p\)</span>: 서로 다른 ofmap의 channel의 psum data를 구별하여 저장할 수 있는 공간.
 
-##### 4.2.1.6 Multiple PE Sets in the PE Array
+#### 4.2.1.6 Multiple PE Sets in the PE Array
 {: #section-13 }
 
 PE sets의 크기가 작다면 PE array에서 여러 개의 PE sets를 mapping할 수 있다. 이 경우, 크게 4가지의 이점이 존재한다.
@@ -272,7 +288,7 @@ Set1, Set3는 channel 1의 ifmap value를, Set2, Set4는 channel 2의 ifmap valu
 
   ⇒ 같은 filter, 다른 channel을 공유하는 한 쌍의 PE set에서 발생하는 psum은 함께 더해진다.
 
-##### 4.2.1.7 PE array processing passes
+#### 4.2.1.7 PE array processing passes
 {: #section-14 }
 
 <figure><img src="/images/papers/eyeriss/04.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -306,7 +322,7 @@ pass를 어떤 순서로 결정하느냐에 따라 GLB에 저장할 데이터가
 
 각 경우에 따라 GLB에 저장되어야 할 데이터의 종류, 비율이 달라진다. Layer에 맞추어 GLB의 저장공간을 배분해야 한다.
 
-#### 4.2.2 Exploit Data Statistics
+### 4.2.2 Exploit Data Statistics
 {: #section-15 }
 
 Row Stationary가 data reuse관점으로 data movement를 줄여서 에너지 소모를 줄여나갔다면 “B. Exploit Data Statistics”는 CNN의 데이터에는 “0”의 값이 많이 나오는 특성을 추가로 활용하여 에너지를 줄인다. 크게 아래 두 가지의 관점으로 구성된다.
@@ -337,10 +353,10 @@ DRAM에서 데이터를 읽을 때:
 
 이를 통해 ifmap, ofmap에 대한 DRAM access가 CONV1에는 30%, CONV5에서는 75% 정도 줄여졌다. Fig. 9를 통해 overall DRAM access가 RLC를 통해 얼마나 줄어들었는지 확인할 수 있다.
 
-### 4.3 System Modules
+## 4.3 System Modules
 {: #section-16 }
 
-#### 4.3.1 Global Buffer
+### 4.3.1 Global Buffer
 {: #section-17 }
 
 Global Buffer, GLB는 PE array 전체가 사용하는 저장소이다.
@@ -363,7 +379,7 @@ Eyeriss의 GLB는 108kB이다.
 2. PE array는 ifmaps, psums에 동시에 접근할 수 있어야 한다.
   ⇒ 서로 다른 bank로 ifmaps, psums를 구분하면 PE array가 데이터를 받아올 때 서로가 저장된 bank에 동시에 접근할 수 있다.
 
-#### 4.3.2 Network-on-Chip(NoC)
+### 4.3.2 Network-on-Chip(NoC)
 {: #section-18 }
 
 NoC는 GLB↔PE array, PE ↔ PE 사이의 data movement를 관리한다. NoC architecture는 크게 아래 3가지를 고려해야 한다.
@@ -374,7 +390,7 @@ NoC는 GLB↔PE array, PE ↔ PE 사이의 data movement를 관리한다. NoC ar
 
 이러한 조건에 맞는 custom NoC를 구현한다.
 
-##### 4.3.2.1 Global Input Network (GIN)
+#### 4.3.2.1 Global Input Network (GIN)
 {: #section-19 }
 
 GIN은 single-cycle multicast를 지원하여, 한 cycle 안에 GLB에서 하나의 데이터를 여러 PE에게 전달해준다.
@@ -406,17 +422,17 @@ Y-bus, X-bus의 두 단계로 원하는 PE에 data를 전달하는 방식이다.
 - Multicast Controller(MC): tag의 ID를 비교하여, 올바른 PE에만 데이터가 갈 수 있도록 하는 장치.
 - Ready signal: PE로 부터 받는 signal로, PE가 동작이 준비되었을 때만 GLB → GIN 으로의 data movement가 일어난다.
 
-##### 4.3.2.2 Global Output Network(GON)
+#### 4.3.2.2 Global Output Network(GON)
 {: #section-20 }
 
 GIN이 GLB→PE array로 데이터를 공급했다면, GON은 반대로 PE array→GLB로 psums 데이터를 전달한다. GIN과 같은 architecture를 가지고 방향만 반대라고 생각하면 된다.
 
-##### 4.3.2.3 Local Network
+#### 4.3.2.3 Local Network
 {: #section-21 }
 
 Local network는 같은 열에서 인접한 두 개의 위, 아래 PE 사이에서 psum을 direct하게 전달해준다. (아래→위 로만 전달이 가능). PE는 GIN을 통해 GLB에서 psum을 받아오는 경우와 LN을 통해 다른 PE로 부터 psum을 받아오는 경우, 총 두 가지가 존재한다. 어떤 방법을 선택할지는 CNN shape에 따른 dataflow mapping에서 결정된다.
 
-### 4.4 Processing Element and Data Gating
+## 4.4 Processing Element and Data Gating
 {: #section-22 }
 
 <figure><img src="/images/papers/eyeriss/07.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -443,7 +459,7 @@ Fig.12에서 PE architecture를 더 구체적으로 분석한다.
     2. MAC datapath의 불필요한 switching을 막는다.
   이를 통해 대략 45%의 PE power consumption을 줄여나갈 수 있다.
 
-## 5. Results
+# 5. Results
 {: #section-23 }
 
 <figure><img src="/images/papers/eyeriss/08.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -454,7 +470,7 @@ Eyeriss 역시 memory에 큰 비중을 두었다. GLB, spads는 전체 면적의
 
 PE spads가 차지하는 면적은 GLB보다 2.5x 더 컸지만, GLB에 비해 용량은 2/3 정도 밖에 미치지 못한다. 이는 spads가 data reuse 관점에서는 유리하지만 그에 대한 trade off로 low memory density가 존재함을 의미한다.
 
-### 5.1 AlexNet
+## 5.1 AlexNet
 {: #section-24 }
 
 Eyeriss로 AlexNet를 동작시켰을 때, actual throughput은 peak throughput에 비해 낮았다.
@@ -477,7 +493,7 @@ Fig. 16을 통해 chip에서 spads, GLB, NoC가 차지하는 전력소모 비율
 
 Fig. 17은 voltage를 scaling up 했을 때의 Frame rate와 power consuming이 어떻게 변하는지 보여준다. 속도와 에너지 효율은 서로가 trade-off 관계를 가짐을 확인할 수 있다.
 
-### 5.2 VGG-16
+## 5.2 VGG-16
 {: #section-25 }
 
 마지막으로 Eyeriss로 VGG-16를 동작시켰을 때의 결과이다.
@@ -495,7 +511,7 @@ TABLE VI에서 CONV1-2와 CONV4-2를 비교하자
     ⇒ 그 이유는 early layer(CONV1-2)는 deeper layer(CONV4-2)보다 더 많은 processing pass를 지니기 때문이다. Processing pass가 많아질 수록 ramping up 하는데 소요되는 시간이 증가하기 때문에 latency가 더 커지는 것이다.
     - Early layer가 더 pass가 많은 이유는 feature map의 크기가 더 커서, PE set을 나누어 PE array에 배치해야 하기 때문이라 생각한다. 그에 반해, deeper layer은 feature map의 크기는 작고, channel의 수가 더 많아서 병렬 연산을 활용하기 쉽기에, early layer에 비해 적은 pass로 구성된다고 생각했다.
 
-## 6. Thought
+# 6. Thought
 {: #section-26 }
 
 CNN의 CONV layer에서 throughput과 energy efficiency를 향상시키기 위한 접근법을 이해할 수 있었다. 특히 data reuse를 구현하는 방식을 이전 논문들보다 깊이 있게 공부할 수 있었고, 이 점이 흥미로웠다. 반복되는 데이터에 대한 off-chip DRAM access를 줄이려면 데이터를 memory hierarchy의 어디에 배치하고 어떻게 이동시켜야 하는지 살펴볼 수 있었다. 또한 CNN layer의 shape에 따라 어떤 순서와 규칙으로 계산을 PE에 mapping해야 하는지에 대한 관점도 얻을 수 있었다.

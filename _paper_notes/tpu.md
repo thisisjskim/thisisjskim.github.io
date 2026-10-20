@@ -69,31 +69,31 @@ note_toc:
   title: 7. Thought
 ---
 
-## 1. Introduction
+# 1. Introduction
 {: #section-1 }
 
 > 이 논문은 실제 Google Datacenter에서 NN application의 연산 요구량이 증가하여 기존 CPU, GPU기반의 datacenter에 부담이 가기 시작하자, 이를 해결하기 위해 자체적으로 제작한 NN inference용 domain-specific custom ASIC인 TPU에 대해 설명한다. TPU를 설계 할 때 고려했던 조건 (response time, accumulator size,,, etc)을 설명한다. TPU가 CPU, GPU(K80)보다 월등한 performance와 power efficiency를 가짐을 보여준다. 또한 TPU가 가지는 문제점, 한계와 앞으로 무엇을 더 발전나가야 할지를 서술한다.
 
 ---
 
-## 2. Problem
+# 2. Problem
 {: #section-2 }
 
 NN application이 Google의 Datacenter 연산 수요를 증가시킨다. NN application은 weight, activation 사이의 수많은 multiplication&accumulation operation을 요구한다. 일반적으로 수많은 연산은 GPU를 통해 해결할 수 있을 것이라 생각하지만, 현재 이 논문에서 다루는 “inference”의 경우, end-users-facing service이기 때문에, response time이 throughput보다 중요하다. 기존의 높은 throughput을 제공하는데 유리한 GPU(K80)는 response time을 고려한 inference model에서 잘 맞지 않는다. 또한 inference의 특성상, training 처럼 정확한 정밀도를 요구하지 않다. 이러한 종합적인 요구사항에 맞춘 custom ASIC가 google에게 필요했다.
 
-## 3. Core Idea
+# 3. Core Idea
 {: #section-3 }
 
 Inference만을 특화로 acceleration하기 위해 chip안에 불필요한 기능을 제외하여 Buffer, Matrix Multiply Unit, Accumulators의 영향력을 키운다. TPU의 성능을 보여주는 Roofline performance model에 대해 자세히 분석해야 하고, 각 NN model이 roofline에서 위치하는 점을 확인하고, 그 의미를 파악해야 한다. Throughput이 아닌 response time에 집중하여 TPU의 batch size를 결정한다. TPU가 가지는 문제점과, 앞으로 발전해나갈 방향을 확인한다.
 
-## 4. Architectures & Computation Methods
+# 4. Architectures & Computation Methods
 {: #section-4 }
 
 TPU는 Google Datacenter의 NN inference 수요가 증가함에 따라, 기존 CPU를 사용했을 때 발생되는 비용과 전력의 부담을 완화하고자 만들어졌다.
 
 <figure><img src="/images/papers/tpu/01.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
 
-### 4.1 **Main Structure(Components)**
+## 4.1 **Main Structure(Components)**
 {: #section-5 }
 
 - CPU와 통합한 것이 아닌** PCIe에 연결되는 coprocessor 형태**로 만들어졌다.
@@ -107,7 +107,7 @@ TPU는 Google Datacenter의 NN inference 수요가 증가함에 따라, 기존 C
 
 Structure를 살펴보면 UB, Matrix Unit이 die면적의 2/3정도를 차지하는 반면, control은 약 2%만 차지하는 것을 확인할 수 있다. 이를 통해 TPU가 NN model의 accelerator의 역할만을 위해 특별히 제작된 것임을 확인할 수 있다.
 
-### 4.2 **Computation Logic**
+## 4.2 **Computation Logic**
 {: #section-6 }
 
 TPU는 Matrix Multiply Unit에서 input data, weight의 8-bit multiplication이 발생한다. multiplication의 결과는 16-bit products의 범위를 가지게 되고, 이 결과는 32-bit Accumulator에 누적된다. 이후 Activation 과정을 거치게 되며, 이 모든 작업이 끝난 값은 Unified Buffer에 저장되어 다음 layer의 연산의 input으로 이동하게 된다.
@@ -142,15 +142,15 @@ TPU instructions는 12개가 존재하며 그중 중요한 5가지는 아래와 
   TPU는 <span class="math-inline" markdown="0">\(\frac{TPU compute time}{I/O time}\)</span> 의 비율을 크게 하는 것이 목적이다. 즉 CPU와의 data movement로 발생하는 시간보다 TPU내부에서 computing에 많은 시간을 쓴다는 뜻이다. 
   결국, 최종적인 TPU의 목표는 모든 inference model을 TPU 내부에서 처리할 수 있게 되어, CPU와의 interactions을 줄이는 것이다.
 
-## 5. Results
+# 5. Results
 {: #section-7 }
 
-### 5.1 Benchmark
+## 5.1 Benchmark
 {: #section-8 }
 
 Paper에서 TPU의 성능을 비교할 때, 실제 datacenter에서 사용될 수 있는 hardware와 workload를 이용하였다. 추가적으로 SECDED protection까지 만족시켜야 한다. CPU의 “Haswell processor”, GPU의 “NVIDIA K80”이 위 조건을 만족하는 chip으로 선정되었다. CPU는 “Turbo mode”를 제외한 상태로 측정했다. NN model에서는 AVX를 자주 사용하고, datacenter 특성상 대부분의 CPU core가 활성화되기 때문에 현실적으로 datacenter에서 높은 Turbo mode가 자주 사용되지 않는다고 판단했기 때문이다. 같은 맥락으로 GPU의 “Boost mode”도 제외되었다. Boost mode를 사용할 경우 power consumption과 cooling issue 등으로 인해 K80 card의 수를 줄여야 하는 trade-off가 생긴다. 이 경우 throughput과 Total Cost of Ownership 측면에서 손해를 볼 수 있기 때문에, GPU 역시 Boost mode를 고려하지 않은 상태로 TPU와 성능을 비교하였다. 추가적으로 공정한 성능 비교를 위해 performance/die로 normalized한다.
 
-### 5.2 Performance
+## 5.2 Performance
 {: #section-9 }
 
 **“Roofline Performance model”**을 이용해서 성능을 비교한다.
@@ -164,9 +164,11 @@ Paper에서 TPU의 성능을 비교할 때, 실제 datacenter에서 사용될 �
 
   - low intensity → memory bound → slanted
   - high intensity → compute bound → flat
-    : 이 관계를 통해 Roofline Performance model에서 특정 NN model이 memory bound or compute bound로 인해 성능이 제한되었음을 확인할 수 있다.
 
-#### 5.2.1 **TPU performance**
+      &#58; 이 관계를 통해 Roofline Performance model에서 특정 NN model이 memory bound or compute bound로 인해 성능이 제한되었음을 확인할 수 있다.
+
+
+### 5.2.1 **TPU performance**
 {: #section-10 }
 
 TPU에 맞게 Roofline model의 **Operational Intensity(x-axis)**의 단위를 **Ops**/**weight byte**로 조정한다. 
@@ -188,7 +190,7 @@ Figure 5를 통해, TPU의 ridge point는 1350 Ops/weight byte이고 TPU의 peak
 
 <figure><img src="/images/papers/tpu/04.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
 
-#### 5.2.2 CPU&GPU performance
+### 5.2.2 CPU&GPU performance
 {: #section-11 }
 
 <figure><img src="/images/papers/tpu/05.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -211,7 +213,7 @@ Table 5는 각 NN application에서 host CPU와 TPU가 PCIe를 통해 통신하�
 
 Table 6는 TPU의 performance를 보여주는 지표이다. GM, WM은 각각 geometric mean, weighted mean이다. (weight mean은 NN application의 사용빈도를 가중치로 두어 구한 평균이다.) 평균GM을 했을 때, TPU는 CPU의 14.5X, GPU의 13.2X의 성능을 보인다. WM일 때는 CPU의 29.2X, GPU의 15.3X의 더 높은 성능을 보임을 확인할 수 있다. Figure 8을 통해 TPU가 CPU/GPU에 비해 높은 Ops/sec을 가짐을 확인할 수 있다.
 
-#### 5.2.3 Cost-Performance, TCO, and Performance/Watt
+### 5.2.3 Cost-Performance, TCO, and Performance/Watt
 {: #section-12 }
 
 <figure><img src="/images/papers/tpu/11.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -223,7 +225,7 @@ Table 6는 TPU의 performance를 보여주는 지표이다. GM, WM은 각각 geo
 
 TPU는 CPU/GPU에 비해 더 높은 Performance/Watt를 가짐을 확인할 수 있다.
 
-#### 5.2.4 Energy Proportionality
+### 5.2.4 Energy Proportionality
 {: #section-13 }
 
 <figure><img src="/images/papers/tpu/12.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -237,7 +239,7 @@ Figure 10에서 incremental power(TPU, K80), total power(TPU+Haswell/2, K80+Hasw
 
 그럼에도 TPU 자체의 power는 매우 낮고, TPU를 사용했을 때 얻는 performance 이득이 매우 높기에 datacenter에서 TPU를 사용하는 것이 전체적인 큰 이익을 가져다 준다.
 
-#### 5.2.5 Evaluation of Alternative TPU Designs
+### 5.2.5 Evaluation of Alternative TPU Designs
 {: #section-14 }
 
 <figure><img src="/images/papers/tpu/13.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -263,12 +265,12 @@ TPU에 GDDR5 memory를 사용하면 memory bandwidth를 약 5배 높일 수 있�
   - GDDR5를 사용하면 기존 DDR3에 비해 10%정도의 면적을 더 차지하게 된다. 그러나 이를 Unified Buffer를 24MiB→14MiB로 줄여서 전체 면적을 맞춰줄 수 있다. UB를 줄여도 되는 이유는, storage allocator의 개선과GDDR5의 높은 Memory bandwidth가 UB의 부담을 덜어주기 때문이다.
   - GDDR5를 이용했을 때 TPU가 소비하는 power도 증가하지만, 더 높은 performance를 내기 때문에 total-performance/Watt는 증가한다. 이는 Figure 9에서 TPU’를 통해 볼 수 있다.
 
-## 6. Discussion
+# 6. Discussion
 {: #section-15 }
 
 Discussion에서는 Fallacy(잘못된 오해), Pitfall(주의점)을 설명한다.
 
-### 6.1 Fallacy
+## 6.1 Fallacy
 {: #section-16 }
 
 - NN inference applications in datacenter은 throughput을 response time과 비슷하게 가치를 매겼을 것이다.
@@ -283,7 +285,7 @@ Discussion에서는 Fallacy(잘못된 오해), Pitfall(주의점)을 설명한�
 - TPU를 발전시키기 위해서는 hardware upgrade(like DDR3→GDDR5)가 유일하다. (Software 측면에서 더이상 발전시키기 어려울 것이다)
   ⇒ CNN1은 TPU의 Roofline performance model 아래에 위치한다. 간단하게 말해서, MAC utilization이 모두 활성화 되지 않았다. 분명 hardware를 개선하여 해결할 수 도 있지만, 모든 MAC을 활성화시키는 software 개선 또한 방법이 될 수도 있다. 아직 여러 방면에서 TPU의 performance를 향상시킬 방법이 존재함을 주장한다.
 
-### 6.2 Pitfall
+## 6.2 Pitfall
 {: #section-17 }
 
 - 여러 Architects에서 중요한 NN model tasks를 다루지 않았다.
@@ -293,7 +295,7 @@ Discussion에서는 Fallacy(잘못된 오해), Pitfall(주의점)을 설명한�
 - Performance counters를 hardware의 구성 이후 마지막에 생각한다.
   ⇒ Performance counters가 있었기에, TPU가 어느 부분에서 bottleneck이 생기는지 알 수 있다. 이는 설계를 할 때 중요한 요소이다. 실제로 paper에서는 더 많은 performance counters가 있었으면 좋았을 것이라고 언급하기도 한다.
 
-## 7. Thought
+# 7. Thought
 {: #section-18 }
 
 특정 상황에 맞추어 설계한 domain specific custom ASIC 중 가장 유명한 TPU의 설계 방향성을 알 수 있었다. 설계를 할 때 무엇을 중점적으로 고려하는지, 어떤 값을 높이기 위해서 무엇을 희생하는지를 확인할 수 있다. 

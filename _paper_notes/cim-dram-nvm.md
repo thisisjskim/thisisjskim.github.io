@@ -57,34 +57,34 @@ note_toc:
   title: 6. My Thoughts
 ---
 
-## 1. Introduction
+# 1. Introduction
 {: #section-1 }
 
 > 이 논문은 SRAM-CIM이 가지는 transistor 및 area overhead, 제한된 weight density, volatility 등의 한계를 보완하기 위한 DRAM, NVM 기반의 CIM을 설명한다. 그러나 DRAM-CIM과 NVM-CIM에서도 leakage, non-linearity, 낮은 signal margin 등의 새로운 문제가 발생하고, 이를 어떤 관점으로 해결했는지를 소개한다.
 
 ---
 
-## 2. Problem
+# 2. Problem
 {: #section-2 }
 
 ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 연구되었다. 그러나 SRAM-CIM에도 여러 한계가 존재한다. SRAM-CIM을 구현하기 위해서는 추가적인 computing logic이 필요하고, 이는 transistor 및 area overhead를 발생시킨다. 또한 SRAM은 하나의 cell에 1-bit를 저장하기 때문에 weight density가 제한된다. 전원이 꺼지면 저장된 data가 사라지는 volatility도 존재한다. 이를, DRAM, NVM 기반의 CIM을 통해 이러한 한계의 일부를 보완할 수 있다. DRAM은 더 높은 memory density를 제공하고, NVM은 non-volatility를 가진다. 그러나 이들을 활용했을 때에도 새로운 문제가 발생한다.
 
 ---
 
-## 3. Core Idea
+# 3. Core Idea
 {: #section-3 }
 
 이 논문은 DRAM, NVM 기반의 CIM을 활용하여 SRAM-CIM의 주요 한계를 어떻게 보완하는지에 초점을 맞춘다. DRAM-CIM에서는 Gain-Cell, 3T cell, 3T-2C cell 등의 구조를 소개한다. NVM-CIM에서는 computation과 read/write operation을 구현하는 current-based, time-based, hybrid 방법을 설명한다. 각 방법은 서로 다른 trade-off를 가지기 때문에 NN model의 요구사항에 맞추어 선택해야 한다.
 
 ---
 
-## 4. Architectures & Computation Methods
+# 4. Architectures & Computation Methods
 {: #section-4 }
 
-### 4.1 DRAM-CIM
+## 4.1 DRAM-CIM
 {: #section-5 }
 
-#### 4.1.1 Digital-PIM/PNM
+### 4.1.1 Digital-PIM/PNM
 {: #section-6 }
 
 - **PIM/PNM**
@@ -92,7 +92,7 @@ ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 �
   - **Benefits**: 기존 memory가 data를 저장하는 역할을 했다면, PIM과 PNM은 일부 computation도 함께 수행할 수 있다.
   - **Challenges**: Computing logic이 cell array 내부에 위치하지 않기 때문에 각 data를 처리할 때 SA가 동작해야 한다. 이는 CIM에 비해 latency, energy efficiency 측면에서 불리할 수 있다.
 
-#### 4.1.2 DRAM
+### 4.1.2 DRAM
 {: #section-7 }
 
 - **1T-1C DRAM-CIM**
@@ -101,7 +101,7 @@ ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 �
   - **Benefits**: 높은 efficiency와 parallelism을 가지며, 더 많은 bandwidth를 활용할 수 있다.
   - **Challenge**: Destructive read, leakage, noise의 영향이 존재한다.
 
-#### 4.1.3 **Gain-Cell DRAM**
+### 4.1.3 **Gain-Cell DRAM**
 {: #section-8 }
 
 - **Figure.2(a)**
@@ -138,7 +138,7 @@ ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 �
   - **Benefits**: Voltage domain을 분리하여 capacitor의 leakage가 1-bit multiplication에 영향을 주지 않도록 한다. 또한 Fig.2(d)와 비교했을 때 큰 capacitor가 필요하지 않기 때문에 cell density를 높일 수 있다.
   - **Challenge**: 하나의 cell에서는 1-bit multiplication만 수행한다.
 
-### 4.2 NVM-CIM
+## 4.2 NVM-CIM
 {: #section-9 }
 
 <columns>
@@ -159,7 +159,7 @@ ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 �
 
 </columns>
 
-#### 4.2.1 Current-Based Operation with Complementary cell
+### 4.2.1 Current-Based Operation with Complementary cell
 {: #section-10 }
 
 - **Figure.3(a)**
@@ -173,7 +173,7 @@ ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 �
   - **Benefits**: **ADC**를 통해 linear한 output을 sensing할 수 있다.
   - **Challenge**: 더 많은 transistor와 resistor를 사용하기 때문에 Fig.3(a)에 비해 memory density가 낮다.
 
-#### 4.2.2 Time-Based operation
+### 4.2.2 Time-Based operation
 {: #section-11 }
 
 - **Figure.3(c)**
@@ -182,7 +182,7 @@ ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 �
   - **Benefits**: 연산 중 지속적으로 흐르는 DC current가 없어 더 높은 energy efficiency를 얻을 수 있다.
   - **Challenge**: 여러 converter를 사용하기 때문에 추가적인 peripheral circuit이 필요하다. **BL**의 discharge latency를 이용하는 sensing path와 **VTC**, **TDC** 등이 요구된다.
 
-#### 4.2.3 Hybrid Method
+### 4.2.3 Hybrid Method
 {: #section-12 }
 
 - **Figure.3(d)**
@@ -196,7 +196,7 @@ ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 �
 
 ---
 
-## 5. Trade-offs and Limitations
+# 5. Trade-offs and Limitations
 {: #section-13 }
 
 <table>
@@ -225,7 +225,7 @@ ML/AI computation의 energy efficiency를 높이기 위해 SRAM-CIM이 많이 �
 
 기본적으로 cell array 내부에서 computation을 수행하면 data movement, SA overhead, latency를 줄일 수 있다. 또한 cell array 내부의 parallelism을 활용하여 efficiency를 높이고 latency를 낮출 수 있다. 그러나 그에 따른 trade-off도 존재한다. Analog domain에서 computation을 수행할 때 variation, leakage, non-linearity, signal margin 등의 문제가 발생하며, 이는 accuracy를 낮추는 원인이 된다.
 
-## 6. My Thoughts
+# 6. My Thoughts
 {: #section-14 }
 
 **Computation(model) mapping을 어떻게 최적화할 수 있는지** 더 깊게 공부해보고 싶었다. 이 논문은 여러 문제를 해결하기 위한 구조적인 접근법을 주로 다룬다고 생각했다. Hybrid Method, 특히 Fig.3(d)를 보며 memory를 어떻게 할당해야 하는지 궁금했다. **SLC**와 **MLC** 두 종류의 cell이 있기 때문에 weight data를 이 둘에 나누어 저장해야 한다. Memory를 **SLC**와 **MLC**로 효과적으로 나누고 할당하는 방법이 있다면 더 알아보고 싶었다.<br>또한 hybrid approach가 NVM-CIM에서만 다루어진 이유도 궁금했다. DRAM-CIM에서도 서로 다른 cell, computation mode, sensing method를 조합하는 hybrid approach를 구현할 수 있는지 궁금했고, 이러한 방법을 활용한 기존 DRAM-CIM 연구가 있는지도 궁금하다. 그뿐만 아니라, 논문에서는 hybrid approach의 challenge, trade-off를 자세하게 설명하지 않는다. Hybrid architecture를 구현할 때 area, control, mapping, accuracy 측면에서 어떤 문제가 발생하는지도 더 알아보고 싶었다.

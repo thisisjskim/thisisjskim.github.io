@@ -52,14 +52,14 @@ note_toc:
   title: 6. My Thoughts, Comments
 ---
 
-## 1. Introduction
+# 1. Introduction
 {: #section-1 }
 
 > 이 논문은 Processing-in-Memory(PIM)가 연구되는 이유와 함께 현재까지 연구되어진 SRAM, DRAM, ReRAM 기반의 PIM을 포괄적으로 설명한다. 각 memory type을 사용했을 때에 따른 장점과, trade-off를 여러 관점에서 분석한다. 그 외에, hardware적 관점이 아닌 software적 측면에서 PIM architecture를 어떻게 발전시켜나갔는지도 서술한다.
 
 ---
 
-## 2. Problem
+# 2. Problem
 {: #section-2 }
 
 AI/ML의 MAC operation은 많은 data를 필요로 하며, conventional von-Neumann architecture에서는 이러한 data가 memory와 processor 사이를 반복적으로 이동한다. 이러한 많은 data communication은 높은 energy consumption을 발생시킨다.
@@ -70,17 +70,17 @@ processing elements와 memory가 분리되어 있으면 processor가 매 연산�
 
 ---
 
-## 3. Core Idea
+# 3. Core Idea
 {: #section-3 }
 
 SRAM, DRAM, ReRAM을 기반으로 한 PIM에서 제시된 여러 구조를 살펴본다. 각 구조에서 얻을 수 있는 benefits와 challenges를 전반적으로 확인할 수 있다. various operation을 어떤  circuit design을 통해 구현했는지 확인할 수 있다. Computation이 memory 내부와 가까워 질 수록, internal bandwidth를 극대화할 수 있지만 accuracy, area constraint 등의 trade-off가 발생한다. 반대로 accuracy를 높이기 위해서 새로운 bitline, logic 등을 추가하게 되면 area overhead가 발생한다. paper에서 어떤 특징을 높이기 위해, 어떻게 설계했고 trade-off를 줄이기 위해 어떤 idea를 제시했는지를 확인할 수 있다.
 
 ---
 
-## 4. Architectures & Computation Methods
+# 4. Architectures & Computation Methods
 {: #section-4 }
 
-### 4.1 SRAM-PIM
+## 4.1 SRAM-PIM
 {: #section-5 }
 
 <figure><img src="/images/papers/pim-overview/01.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -106,7 +106,7 @@ SRAM, DRAM, ReRAM을 기반으로 한 PIM에서 제시된 여러 구조를 살�
   - **Benefits**: ADC/DAC overhead, PVT variation (Process, Voltage, Temperature), non-linearity issue 등을 해결할 수 있다. 
   - **Challenge**: memory, computation blocks로 인한 large unit PIM cell로 인하여 더 많은 area를 소비한다. 즉 memory density가 크게 줄어들게 된다.
 
-### 4.2 **DRAM-PIM**
+## 4.2 **DRAM-PIM**
 {: #section-6 }
 
 - **Cell level DRAM-PIM**
@@ -150,7 +150,7 @@ SRAM, DRAM, ReRAM을 기반으로 한 PIM에서 제시된 여러 구조를 살�
   - **Benefits**: data communications을 logic die와 memory die 사이에 진행하여 energy-efficient, high bandwidth의 benefits을 가진다.
   - **Challenge**: 3-D stacked die의 strict physical/timing constraint 때문에 구현이 어렵고  Neurocube/Tetris/iPIM은 모두 simulation으로만 평가됐다.
 
-### 4.3 **ReRAM-PIM**
+## 4.3 **ReRAM-PIM**
 {: #section-7 }
 
 - **Current mode & Voltage mode**
@@ -192,14 +192,14 @@ SRAM, DRAM, ReRAM을 기반으로 한 PIM에서 제시된 여러 구조를 살�
   - **Benefits**: \{-1,0,+1\} 총 3가지의 state를 표현할 수 있다.
   - **Challenge**: “+1”에 해당하는 analog current 값은 <span class="math-inline" markdown="0">\(I_{LRS}\)</span>에 해당한다. 그리고 “0”에 해당하는 값은 <span class="math-inline" markdown="0">\(I_{HRS}\)</span> or “**no current**”이다. One column에 9개의 cell이 연결되어 있다고 하자.  이때 만약 어떤 column에서 “+1”라는 값이 도출되었을 때, **BL current**는 <span class="math-inline" markdown="0">\(I_{LRS}\)</span> \~ <span class="math-inline" markdown="0">\(I_{LRS}+8I_{HRS}\)</span> 의 범위로 표현된다. 이러한 **BL current distribution**으로 인해 sensing margin이 낮아진다. 
 
-#### 4.3.1 State of the Art ReRAM based PIM
+### 4.3.1 State of the Art ReRAM based PIM
 {: #section-8 }
 
 1. 더 복잡한 ML algorithms and datasets의** **accuracy requirement를 만족할 수 있는 PIM을 요구한다. (더 높은 MAC precision을 요구한다)
 2. ReRAM-based PIM은 NN models accelerating만 많이 연구되었다. 다양한 종류의 ML algorithms에 대한 연구가 아직 많이 남아있다.
 3. 현재는 Analog ReRAM이 가지는 장점보다 단점(large device variation)이 더 크게 느껴져서, Digital ReRAM이 더 선호된다. 그러나 device가 발전함에 따라 area cost에 이점이 있는 Analog ReRAM이 선호될 가능성이 높다.
 
-#### 4.3.2 New Directions for ReRAM PIM Research
+### 4.3.2 New Directions for ReRAM PIM Research
 {: #section-9 }
 
 ⇒ ReRAM PIM Research에 새로운 방향을 paper에서 크게 3가지 제시한다.
@@ -208,7 +208,7 @@ SRAM, DRAM, ReRAM을 기반으로 한 PIM에서 제시된 여러 구조를 살�
 2. **Security & Reliability**
 3. **Versatile PIM functions**: MAC뿐만 아닌 다양한 Boolean logic도 지원
 
-### 4.4 Software Stack
+## 4.4 Software Stack
 {: #section-10 }
 
 - **PIM software stack**
@@ -222,31 +222,49 @@ SRAM, DRAM, ReRAM을 기반으로 한 PIM에서 제시된 여러 구조를 살�
       - PIM instruction에 맞는 PIM kernel을 구성
     - **PIM Device Driver**: PIM operation을 위한 memory space를 실제로 할당**<br>**
 - **PIM Offloading Execution**
-  : 어떤 operation이 PIM을 통해 효율적으로 연산될 수 있는지 결정하는 것이 중요하다.<br>PIM-friendly operations을 구별하고, 알맞는 operations을 PIM에 offloading 해야 한다.
+
+    &#58; 어떤 operation이 PIM을 통해 효율적으로 연산될 수 있는지 결정하는 것이 중요하다.<br>PIM-friendly operations을 구별하고, 알맞는 operations을 PIM에 offloading 해야 한다.
+
   - **specialized PIM logic (can only execute specific operations)**
-    : specialized PIM logic은 수행 가능한 operation이 제한되어 있어서 어떤 operation이 PIM-friendly인지 판단하기 쉽다.
+
+      &#58; specialized PIM logic은 수행 가능한 operation이 제한되어 있어서 어떤 operation이 PIM-friendly인지 판단하기 쉽다.
+
   - **PIM logic with general-purpose cores**
-    : General-purpose PIM core에서는 다양한 operation을 실행할 수 있기에 어떤 operation을 PIM에 offload해야 할지 판단하기 어렵다. 이때, PIM은 ‘low data locality’를 가지는 memory-intensive operation을 PIM-friendly로 선정할 수 있다. (이를 판별하는 4단계의 방법이 제시되었다.)
+
+      &#58; General-purpose PIM core에서는 다양한 operation을 실행할 수 있기에 어떤 operation을 PIM에 offload해야 할지 판단하기 어렵다. 이때, PIM은 ‘low data locality’를 가지는 memory-intensive operation을 PIM-friendly로 선정할 수 있다. (이를 판별하는 4단계의 방법이 제시되었다.)
+
       ⇒ low data locality이기 때문에, data를 off-chip memory에서 가져와도 reuse를 못해서 data movement cost가 크다. 이러한 operation은 PIM에 유리하다.
 - **Data mapping**
   - **DRAM-based bank-level PIM**
-    : 연산에 사용되는 data가 **같은 bank에 존재**하여 global bus의 사용량을 줄이고, 같은 bank에 data가 함께 존재해도, **같은 row에 data가 존재**하여 연속적으로 읽으면, 다른 row의 data를 읽을 때 발생되는 precharge, activation commands 등으로 발생하는 additional delays를 줄일 수 있다. \*memory access pattern을 보고 자동으로 memory mapping해주는 mechanism도 연구되었다.
+
+      &#58; 연산에 사용되는 data가 **같은 bank에 존재**하여 global bus의 사용량을 줄이고, 같은 bank에 data가 함께 존재해도, **같은 row에 data가 존재**하여 연속적으로 읽으면, 다른 row의 data를 읽을 때 발생되는 precharge, activation commands 등으로 발생하는 additional delays를 줄일 수 있다. \*memory access pattern을 보고 자동으로 memory mapping해주는 mechanism도 연구되었다.
+
   - **ReRAM-based PIM**
-    : CNN에서 3D kernels를 여러개의 1 x 1 x D matrics로 쪼개고 각각을 서로 다른 PIM PE에 배치하는 방법이 있다. 이 방법은 PE들 사이의 internal data movement를 활용하여 weight와 input data reuse를 최대화할 수 있다.
+
+      &#58; CNN에서 3D kernels를 여러개의 1 x 1 x D matrics로 쪼개고 각각을 서로 다른 PIM PE에 배치하는 방법이 있다. 이 방법은 PE들 사이의 internal data movement를 활용하여 weight와 input data reuse를 최대화할 수 있다.
+
 - **PIM execution scheduling**
   - **Load balancing**
-    : 많은 offloaded executions가 PIM 쪽에 queueing되면 GPU–PIM 간 load imbalance가 발생할 수 있다. 이 경우 GPU가 PIM의 queue가 처리될 때까지 기다리게 되어 전체 system performance가 저하될 수 있다.
+
+      &#58; 많은 offloaded executions가 PIM 쪽에 queueing되면 GPU–PIM 간 load imbalance가 발생할 수 있다. 이 경우 GPU가 PIM의 queue가 처리될 때까지 기다리게 되어 전체 system performance가 저하될 수 있다.
+
   - **Channel balancing**
-    : RX/TX channel utilization의 불균형을 방지하기 위해 pending offloading request의 수와 RX/TX bandwidth utilization rate에 threshold를 설정하고, threshold에 도달하면 추가적인 PIM offloading을 제한한다.
+
+      &#58; RX/TX channel utilization의 불균형을 방지하기 위해 pending offloading request의 수와 RX/TX bandwidth utilization rate에 threshold를 설정하고, threshold에 도달하면 추가적인 PIM offloading을 제한한다.
+
   - **Concurrent execution scheduling**
-    : Kernel dependency information, affinity prediction model, execution time prediction model을 이용하여 어떤 kernel들을 병렬로 실행할 수 있는지, 어떤 computation core에서 실행하는 것이 적절한지, 실행 시간이 얼마나 걸릴지를 판단하여 GPU와 PIM을 효율적으로 동시에 활용한다.
+
+      &#58; Kernel dependency information, affinity prediction model, execution time prediction model을 이용하여 어떤 kernel들을 병렬로 실행할 수 있는지, 어떤 computation core에서 실행하는 것이 적절한지, 실행 시간이 얼마나 걸릴지를 판단하여 GPU와 PIM을 효율적으로 동시에 활용한다.
+
 - **Cache coherence**
   - **Coherence for Near Data Accelerators (CoNDA)**
-    : CPU와 DRAM-based 3-D PIM 사이의 cache coherence를 효율적으로 관리하기 위한 방식이다. CoNDA에서는 PIM이 optimistic execution mode 동안 coherence request를 발생시키지 않고 연산을 수행한다. 대신 PIM read, PIM write, CPU write가 발생한 memory address를 추적한다. 이 동안 modified data는 memory에 바로 반영하지 않는다. 이후 PIM execution이 끝나면 기록된 정보를 바탕으로 updated shared data에 대해서만 coherence를 처리한다. 이는 PIM 연산 중 발생하는 불필요한 coherence request를 줄이는 효과를 보인다.
+
+      &#58; CPU와 DRAM-based 3-D PIM 사이의 cache coherence를 효율적으로 관리하기 위한 방식이다. CoNDA에서는 PIM이 optimistic execution mode 동안 coherence request를 발생시키지 않고 연산을 수행한다. 대신 PIM read, PIM write, CPU write가 발생한 memory address를 추적한다. 이 동안 modified data는 memory에 바로 반영하지 않는다. 이후 PIM execution이 끝나면 기록된 정보를 바탕으로 updated shared data에 대해서만 coherence를 처리한다. 이는 PIM 연산 중 발생하는 불필요한 coherence request를 줄이는 효과를 보인다.
+
 
 ---
 
-## 5. Challenge/Limitations
+# 5. Challenge/Limitations
 {: #section-11 }
 
 - **Data Converter Overhead**
@@ -259,7 +277,7 @@ SRAM, DRAM, ReRAM을 기반으로 한 PIM에서 제시된 여러 구조를 살�
   CIM은 off-chip data movement를 최소화하여 data movement energy를 줄인다. 그러나 data duplication과 extra intra-memory data movement로 인해 extra energy consumption이 발생할 수 있다. 특히 conventional im2col-based algorithm에서는 input data의 duplication으로 인해 cache/bandwidth usage가 증가할 수 있다. 이를 해결하기 위해 matrix lowering scheme과 direct convolution algorithm 기법이 사용될 수 있다.
   - Direct convolution은 neighboring SRAM bit-cells의 data를 recycle하여 extra data duplication 및 intra-memory data movement를 최소화한다.
 
-## 6. My Thoughts, Comments
+# 6. My Thoughts, Comments
 {: #section-12 }
 
 “An Overview of Processing-in-Memory Circuits for Artificial Intelligence and Machine Learning”을 통해 memory type에 따른 다양한 PIM structure, operation method, benefits, challenges, trade-off 등을 알 수 있었다. 또한 hardware의 관점뿐만 아니라 software의 관점에서도 PIM을 바라볼 수 있었고, 이를 통해 software와 computer architecture에 대한 추가적인 학습이 필요하다는 점을 느꼈다.

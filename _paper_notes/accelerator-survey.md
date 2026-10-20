@@ -55,17 +55,17 @@ note_toc:
   title: 3. Thought
 ---
 
-## 1. Introduction
+# 1. Introduction
 {: #section-1 }
 
 High-Performance Computing(HPC)의 발전으로 더 많은 데이터를 빠르게 처리할 수 있게 되면서, 더 복잡한 AI model의 학습과 실행도 가능해졌다. 이 논문은 CPU, GPU뿐만 아니라 TPU, FPGA, ASIC, NPU, 그리고 PIM과 non-volatile memory 기반 IMC(CIM) 등 다양한 AI accelerator의 구조와 접근법을 다룬다. 각 accelerator의 특징과 핵심 아이디어를 살펴보고 기존 연구 사이의 연관성을 파악함으로써, AI accelerator의 전반적인 발전 흐름과 performance 및 energy efficiency를 높이기 위한 여러 전략을 이해할 수 있다.
 
 <figure><img src="/images/papers/accelerator-survey/01.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
 
-## 2. Accelerators
+# 2. Accelerators
 {: #section-2 }
 
-### 2.1 GPU-based accelerators
+## 2.1 GPU-based accelerators
 {: #section-3 }
 
 GPU는 많은 연산을 동시에 수행할 수 있다. Training뿐만 아니라 ML operation을 상당히 가속할 수 있다. GPU의 성능을 측정할 때 크게 theoretical peak performance, memory bandwidth를 고려한다. 그러나 실제 “final performance”를 확인하기 위해서는 특정 workload를 시행해서 성능을 직접 측정해야 한다. 이때 사용되는 benchmark가 ”MLPerf”이다.
@@ -86,7 +86,7 @@ Table 3의 결과를 통해 trade-off에 대해 생각할 수 있다.
 
 지금의 trade-off에 대한 내용은 GPU에 국한된 것이 아닌, 전반적인 accelerator에서 거의 공통되게 나타나는 특징이라 생각한다. 이러한 관점을 바탕으로 특정 accelerator가 어떤 목적을 달성하기 위해 무엇을 희생했는지 볼 수 있을 것이다.
 
-### 2.2 TPU-based accelerators
+## 2.2 TPU-based accelerators
 {: #section-4 }
 
 <p class="related-note"><a href="/paper-notes/tpu/">TPU — Paper Note ↗</a></p>
@@ -142,7 +142,7 @@ Goya는 inference를, Gaudi는 training을 주요 대상으로 한다. Gaudi는 
 
 이 section에서도 확인할 수 있는 점은, 앞서 다루었던 접근들이 유사하게 반복된다는 사실이다.
 
-### 2.3 Hardware Accelerators
+## 2.3 Hardware Accelerators
 {: #section-5 }
 
 <figure><img src="/images/papers/accelerator-survey/03.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -154,15 +154,21 @@ Fig.2를 통해 GPUs, ASICs, FPGAs의 performance, power consumption을 표현�
 Hardware에서 발생하는 가장 큰 문제 중 하나는 off-chip DRAM access로 인해 발생하는 energy, latency cost이다. Fig.3는 off-chip DRAM access를 줄이기 위한 data reuse, stationary strategies이다. 크게 3가지의 전략으로 구성된다.
 
   1. Weight stationary dataflow
-    : weight가 PE의 local memory에 저장되고, external DRAM으로 부터 제공되는 activation에 재사용됨.
+
+      &#58; weight가 PE의 local memory에 저장되고, external DRAM으로 부터 제공되는 activation에 재사용됨.
+
   2. Output stationary dataflow
-    : partial sum이 PE의 local memory에 저장되고, computation이 끝나기 전까지 생성되는 intermediate results를 local에 유지하며 사용함.
+
+      &#58; partial sum이 PE의 local memory에 저장되고, computation이 끝나기 전까지 생성되는 intermediate results를 local에 유지하며 사용함.
+
   3. Input stationary dataflow
-    : input activation을 PE의 local memory에 저장하여 재사용하고, weight가 external DRAM을 통해 PE에 공급됨.
+
+      &#58; input activation을 PE의 local memory에 저장하여 재사용하고, weight가 external DRAM을 통해 PE에 공급됨.
+
 
 특정 data를 local memory 근처에 두는 방법 외에도, 숫자를 표현하는 bit 수를 줄이는 quantization을 통해서도 data movement, memory capacity, computation cost 측면의 이점을 가질 수 있다. 그러나 precision을 낮추면 accuracy도 줄어들게 된다(trade off). 낮은 precision에서도 비슷한 accuracy를 얻기 위해 parameter, operation의 수가 2\~11배 정도 필요하다. 이는 복잡한 문제를 해결하는데 명확한 한계가 존재한다.
 
-#### 2.3.1 FPGAs
+### 2.3.1 FPGAs
 {: #section-6 }
 
 What is FPGAs?
@@ -170,11 +176,17 @@ What is FPGAs?
   FPGAs는 만들어진 hardware 내부에 computation 기능을 구현할 수 있는 장치가 있어서, 사용자의 설정을 통해 원하는 회로 동작을 구성할 수 있는 특징을 가진다. 즉, FPGAs는 특정 workload에 맞춘 computation structure를 구현할 수 있고, workload의 여러 요구에 대응하기 용이한 장점을 가지고 있다.
   FPGA 기반 accelerator는 크게 3가지로 구성된다
     1. General-purpose processor
-      : software workload를 시행하는 역할
+
+        &#58; software workload를 시행하는 역할
+
     2. Computational module
-      : DL operations을 담당한다.(convolution, pooling, softmax function)
+
+        &#58; DL operations을 담당한다.(convolution, pooling, softmax function)
+
     3. Memory hierarchy
-      : external DRAM과의 data movement를 효율적으로 구성하기 위한 장치.
+
+        &#58; external DRAM과의 data movement를 효율적으로 구성하기 위한 장치.
+
   FPGAs는 edge application에서 주로 사용되었지만, 경우에 따라 datacenter에서도 사용된다. 최근 이러한 FPGAs의 throughput을 높이며 최적화 하기 위한 연구가 관심을 받고 있으며, CGRAs 라는 대안이 소개된다.
 
 **What is CGRAs?**
@@ -183,7 +195,7 @@ What is FPGAs?
   CGRAs는 PE 사이의 경로를 수정하기에 FPGAs 보다 회로를 재구성하는데 사용되는 비용이 작고, workload에 맞는 dataflow를 더 빠르고 효율적으로 수정할 수 있다.
   그러나 CGRAs의 PE가 “word-level”이기 때문에 word-level에 맞지 않는(더 적거나 더 많은 bit사이의 연산) workload를 구현하기 어려울 수 있다. 즉 FPGAs에 비해 회로를 수정할 수 있는 자유도가 낮다.
 
-#### 2.3.2 ASICs
+### 2.3.2 ASICs
 {: #section-7 }
 
 이 section은 다양한 종류의 ASICs에 대한 설명이 담겨 있다.
@@ -200,13 +212,17 @@ RRAM, PCM 등을 이용한 NVM의 in situ matrix-vector multiplication을 활용
 ASICs는 custom accelerator로서 dataflow(data reuse pattern)를 최적화하여 system efficiency를 높인다. 먼저 off-chip memory access를 줄이는 접근을 활용한 DianNao family에 속하는 DaDianNao, ShiDianNao의 특징을 살펴본다.
 
 - DaDianNao
-  : on-chip eDRAM 안에 workload의 weight를 다 저장하고, input activation(neurons)을 이동시키는 방법을 채택한다. Weight stationary dataflow를 이용하여 data reuse를 활용한다. (아래 링크는 DaDianNao를 정리한 자료이다)
+
+    &#58; on-chip eDRAM 안에 workload의 weight를 다 저장하고, input activation(neurons)을 이동시키는 방법을 채택한다. Weight stationary dataflow를 이용하여 data reuse를 활용한다. (아래 링크는 DaDianNao를 정리한 자료이다)
+
   
 
 <p class="related-note"><a href="/paper-notes/dadiannao/">DaDianNao — Paper Note ↗</a></p>
 
 - ShiDianNao
-  : CNN application을 대상으로 하며, weight sharing strategy를 사용한다. CNN parameters를 on-chip SRAM에 저장하여 off-chip DRAM access를 피한다.
+
+    &#58; CNN application을 대상으로 하며, weight sharing strategy를 사용한다. CNN parameters를 on-chip SRAM에 저장하여 off-chip DRAM access를 피한다.
+
 
 다음 살펴볼 accelerator는 Eyeriss이다. 앞선 DianNao family는 off-chip DRAM access를 대부분 줄이고, 거의 모든 data(parameters)를 on-chip DRAM, SRAM에 옮기는 전략을 사용했다면, Eyeriss는 off-chip DRAM access를 비용을 포함하여 high throughput, high energy efficiency를 보여준다. Eyeriss에서 사용된 전략은 아래와 같다.
 
@@ -227,7 +243,7 @@ IBM에서 소개하는 AI accelerator는 training, inference를 위해 설계되
 
 이번 section을 통해, AI accelerator에서 energy efficiency를 높이는 관점 및 목적에 맞는 ASICs design 철학을 확인할 수 있었다.
 
-#### 2.3.3 Accelerators for Sparse Matrices
+### 2.3.3 Accelerators for Sparse Matrices
 {: #section-8 }
 
 Sparse Matrix는 “0”이 원소로 많이 존재하는 matrix이다. ”0” value를 더하거나 곱하여 누적해도 결과(partial sum)에 영향을 미치지 못한다. 따라서 “0” value에 해당하는 값들을 연산 과정에 참여시키지 않도록 하여 latency를 줄이고, energy-efficiency, performance를 높이는 전략을 소개한다.
@@ -281,22 +297,28 @@ UCNN에서는 “0” 데이터를 활용하는 것 뿐만 아니라 반복되�
 
 등의 사고로 확장해 나갈 수 있었다.
 
-### 2.4 Accelerators Based on Emerging Technologies
+## 2.4 Accelerators Based on Emerging Technologies
 {: #section-9 }
 
 Off-chip memory access를 줄이기 위한 노력이 상당히 많이 이루어졌음을 앞서 여러 section을 통해 확인할 수 있다. 이는 곧 높은 성능을 내기 위해서는 process(computation) modules와 memory architecture를 함께 설계하여 최적화하는 것이 필연적임을 의미한다. 결국 이 section에서 설명하는 내용도 유사하다. DNN operation을 수행할 때 발생하는 상당한 data movement로 발생하는 cost를 어떻게 줄일 것인지, latency는 어떻게 낮출 것인지, energy-efficiency는 어떻게 높일 것인지의 관점으로 보면 된다. 그러나 앞선 section과의 차이점은 “memory”에 집중하여 이를 해결하려고 한다는 점이다.
 
-#### 2.4.1 Processing-in-Memory(PIM)
+### 2.4.1 Processing-in-Memory(PIM)
 {: #section-10 }
 
 PIM의 기본 원리는 간단하다. Computation을 memory(DRAM) 내부 혹은 근처에서 실행하는 것이다. 이를 통해, DRAM의 internal bandwidth를 활용하여 더 높은 수준의 병렬 연산을 가능하게 하고, host와 memory 사이의 data transfer의 부담을 줄이는 등의 이점을 가진다. DRAM의 어느 영역에서 computation이 실행됨에 따라 PIM은 크게 3가지로 분류할 수 있다.
 
 1. In-subarray(Cell-level) PIMs
-  : 연산이 local sense amplifiers에서 발생
+
+    &#58; 연산이 local sense amplifiers에서 발생
+
 2. Bank-level PIMs
-  : column decoder 이후 단계에서 연산이 발생(memory bank에 logic 존재)
+
+    &#58; column decoder 이후 단계에서 연산이 발생(memory bank에 logic 존재)
+
 3. Logic-die level PIMs
-  : 3D-stacked memory block의 logic die에서 연산이 발생
+
+    &#58; 3D-stacked memory block의 logic die에서 연산이 발생
+
 
 <figure><img src="/images/papers/accelerator-survey/05.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
 
@@ -309,11 +331,17 @@ In-subarray PIMs 중 인상 깊었던 것은 PIM-DRAM이다.
 다음으로는 logic die-level PIMs를 다룬다. 여러 PIMs가 소개되었지만, 근본이라고 볼 수 있는 Neurocube, Tetris architecture와 인상 깊었던 전략을 사용했던 NeuralHMC를 대표적으로 정리하였다.
 
   - Neurocube
-    : 16개의 vault로 이루어지며, 각 vault에 속한 logic die마다 PE(연산장치)와 PNG(data movement를 관리하는 장치)가 존재한다. 연산에 필요한 데이터들은 TSV, vault controller를 통해 logic die로 전달된다. Output stationary dataflow를 사용한다는 특징도 존재한다.
+
+      &#58; 16개의 vault로 이루어지며, 각 vault에 속한 logic die마다 PE(연산장치)와 PNG(data movement를 관리하는 장치)가 존재한다. 연산에 필요한 데이터들은 TSV, vault controller를 통해 logic die로 전달된다. Output stationary dataflow를 사용한다는 특징도 존재한다.
+
   - Tetris
-    : Neurocube와 유사하다. 그러나 data movement를 더 효율적으로 구성하였다. 각 vault에 속한 logic die에 14 <span class="math-inline" markdown="0">\(\times\)</span> 14 systolic PE array, small SRAM buffer가 존재한다. 또한 Eyeriss에서 언급되었던 row stationary dataflow를 활용하여 data reuse를 극대화한다는 특징이 존재한다.
+
+      &#58; Neurocube와 유사하다. 그러나 data movement를 더 효율적으로 구성하였다. 각 vault에 속한 logic die에 14 <span class="math-inline" markdown="0">\(\times\)</span> 14 systolic PE array, small SRAM buffer가 존재한다. 또한 Eyeriss에서 언급되었던 row stationary dataflow를 활용하여 data reuse를 극대화한다는 특징이 존재한다.
+
   - NeuralHMC
-    : weight access로 발생하는 cost를 줄이기 위한 전략으로, 기존 FP32로 표현된 데이터를 온전히 주고받는 방법에서 5 or 8-bit cluster index 기법으로 변경하여 memory consumption을 줄인다.
+
+      &#58; weight access로 발생하는 cost를 줄이기 위한 전략으로, 기존 FP32로 표현된 데이터를 온전히 주고받는 방법에서 5 or 8-bit cluster index 기법으로 변경하여 memory consumption을 줄인다.
+
       \*cluster index: 반복되는 weight에 고유 번호를 지정하여, weight의 정보를 주고받을 때 weight의 실제 값이 아닌, 고유 번호를 주고받음으로써 weight로 인한 부담을 줄이는 것이다.
 
 마지막으로 bank-level PIM이다. Newton과 HBM-PIM이 예시로 등장하는데, 이 둘의 큰 차이점은 programmability이다. Newton은 fixed dataflow의 특징을 가진다. 이는 범용적인 계산에는 취약할 수 있으나, 특정 목적에 맞는 task에는 큰 효율을 보인다는 장점이 존재한다. 반대로 HBM-PIM은 function-in-memory DRAM으로 소개되며, 두 개의 bank마다 programmability를 제공하는 PCU가 포함된 구조이다.
@@ -324,7 +352,7 @@ In-subarray PIMs 중 인상 깊었던 것은 PIM-DRAM이다.
 
 각 PIM architecture의 logic의 구현 방법, 특징, trade-off, strategy 등은 위 정리를 통해 더 자세하게 확인할 수 있다. 앞서 설명이 부족했던 In-subarray PIMs의 AMBIT, DRISA, Bank-level PIMs의 Newton, HBM-PIM 그리고 Logic-die level PIMs의 Neurocube, Tetris 등을 더 자세히 확인할 수 있다.
 
-#### 2.4.2 In-Memory Computing(IMC, CIM)
+### 2.4.2 In-Memory Computing(IMC, CIM)
 {: #section-11 }
 
 <p class="related-note"><a href="/paper-notes/pim-overview/">PIM Circuits Overview — Paper Note ↗</a></p>
@@ -362,7 +390,7 @@ CIM은 memory wall, compute wall을 모두 해결하기 위한 방안으로서, 
 
 이를 통해, 특정 연산을 가속해도 가속이 되지 않은 연산이 또 다른 병목 현상을 발생시킨다는 것, 그리고 이를 해결하기 위한 방법으로 digital core와의 역할 분담을 한다는 전략 등의 사고를 확장해나갈 수 있었다.
 
-#### 2.4.3 Neuromorphic Accelerators
+### 2.4.3 Neuromorphic Accelerators
 {: #section-12 }
 
 Neuromorphic computing은 간단히 설명하자면, 데이터를 저장하는 memory, 연산을 수행하는 processor가 분리되어 있는 기존의 방식인 von Neumann-based architecture가 아닌, PE와 memory가 합쳐진 여러 단위 사이에서 정보를 주고받으며 계산하는 방식이다. 이러한 neuromorphic을 이용한 chip들은 높은 neuron, synapse density, energy efficiency를 가지기 때문에 edge computing을 구현함에 있어서 유리하다.
@@ -370,15 +398,23 @@ Neuromorphic computing은 간단히 설명하자면, 데이터를 저장하는 m
 **Small-scale**
 
 - **SpiNNaker chip (for SNN, neuroscience simulation acceleration)**
-  : distributed von Neumann approach를 사용한다(processor의 연산을 주위 processor와 나누어 가지며 정보를 주고받는 방식). 또한, Globally Asynchronous, Locally Synchronous(GALS)를 통해, local 영역은 내부 clock으로 맞춰 동작되고, local 영역 사이에서 데이터를 주고받을 때는 clock에 맞추지 않고 통신할 수 있게 한다(spike event가 발생했을 때 바로 전달).
+
+    &#58; distributed von Neumann approach를 사용한다(processor의 연산을 주위 processor와 나누어 가지며 정보를 주고받는 방식). 또한, Globally Asynchronous, Locally Synchronous(GALS)를 통해, local 영역은 내부 clock으로 맞춰 동작되고, local 영역 사이에서 데이터를 주고받을 때는 clock에 맞추지 않고 통신할 수 있게 한다(spike event가 발생했을 때 바로 전달).
+
 - **Full-custom digital hardware (for accelerating specific workloads)**
-  : SNN에 맞춘 회로를 전용으로 설계하여, 더 높은 density, energy efficiency를 보이게 할 수 있다. 마치 SNN 전용 ASIC으로 생각할 수 있을 것이다.
+
+    &#58; SNN에 맞춘 회로를 전용으로 설계하여, 더 높은 density, energy efficiency를 보이게 할 수 있다. 마치 SNN 전용 ASIC으로 생각할 수 있을 것이다.
+
   - **45nm design in Reference \[176\]**
-    : Leaky Integrate-and-Fire neurons를 사용하고, S-STDP 방식으로 synapses가 update된다. 256개의 neurons, 64k synapses를 저장할 수 있는 용량을 가진다.
+
+      &#58; Leaky Integrate-and-Fire neurons를 사용하고, S-STDP 방식으로 synapses가 update된다. 256개의 neurons, 64k synapses를 저장할 수 있는 용량을 가진다.
+
       \*Leaky Integrate-and-Fire neurons는 뉴런의 특징을 의미한다. 시간이 지나면 신호가 줄어드는(leaky) 현상, spike가 누적되는 현상(Integrate), 그리고 threshold를 넘으면 output spike를 발생시키는(Fire) 현상이 구현된 것이다.
       \*Stochastic Synaptic Time Dependant Plasticity (S-STDP)란, spike의 시간적 관계에 따라서 synapse weight가 확률적으로 (Stochastic) 변화하는 방식이다.
   - **ODIN, MorphIC chip**
-    : ODIN chip은 neuron, synapse의 규모는 동일하지만, SDSP 기반의 synapse를 사용하고, 다른 공정을 사용한다. MorphIC chip은 ODIN core 4개를 이용하여 설계한 chip이다. SNN용 NPU를 위한 시도였다.
+
+      &#58; ODIN chip은 neuron, synapse의 규모는 동일하지만, SDSP 기반의 synapse를 사용하고, 다른 공정을 사용한다. MorphIC chip은 ODIN core 4개를 이용하여 설계한 chip이다. SNN용 NPU를 위한 시도였다.
+
       \*SDSP: Spike-Driven Synaptic Plasticity: spike의 발생에 따라 synaptic weight를 변화시키는 방식
 
 위에서 언급된 Neuromorphic accelerators는 각각 작은 규모의 회로이다. 다음은, 수많은 neuron, synapse가 포함된 더 큰 규모의 Neuromorphic platforms을 처리하기 위해 만들어진 accelerators에 대해 살펴본다.
@@ -386,9 +422,13 @@ Neuromorphic computing은 간단히 설명하자면, 데이터를 저장하는 m
 **Large-scale**
 
   - **IBM TrueNorth**
-    : 1M neurons, 256M개의 binary **non-plastic** synapses를 포함하며 GALS design으로 설계되었다. TrueNorth는 3개의 뉴런의 결합으로 다양한 동작을 수행할 수 있다.
+
+      &#58; 1M neurons, 256M개의 binary **non-plastic** synapses를 포함하며 GALS design으로 설계되었다. TrueNorth는 3개의 뉴런의 결합으로 다양한 동작을 수행할 수 있다.
+
   - **Loihi (balanced with versatility and efficiency)**
-    : 앞선 예시들과 달리, Loihi는 fully asynchronous design으로 설계되었다. Loihi의 neuron은 LIF model을 기반으로 하며, 여기에 몇 가지 동작 기능이 추가되었다. 또한 **compartment의 개수를 설정**할 수 있고, spike-based plasticity rule을 programming할 수 있다. 이는 synaptic weight를 갱신하는 규칙을 설정할 수 있음을 의미한다.
+
+      &#58; 앞선 예시들과 달리, Loihi는 fully asynchronous design으로 설계되었다. Loihi의 neuron은 LIF model을 기반으로 하며, 여기에 몇 가지 동작 기능이 추가되었다. 또한 **compartment의 개수를 설정**할 수 있고, spike-based plasticity rule을 programming할 수 있다. 이는 synaptic weight를 갱신하는 규칙을 설정할 수 있음을 의미한다.
+
       \*구현한 기능
       1. Axonal delay: spike가 전달될 때의 delay 설정
       2. Refractory delay: neuron에 firing이 발생한 후 다시 firing이 발생하지 못하게 하는 시간을 설정
@@ -427,7 +467,7 @@ neuromorphic chip의 설계에서는 **versatility, efficiency**를 함께 고�
 </tr>
 </table>
 
-## 3. Thought
+# 3. Thought
 {: #section-13 }
 
 <table>

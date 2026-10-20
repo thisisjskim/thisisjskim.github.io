@@ -51,27 +51,27 @@ note_toc:
   title: 7. Thought & Questions
 ---
 
-## 1. Introduction
+# 1. Introduction
 {: #section-1 }
 
 > 이 논문은 CNN의 병목을 off-chip RAM과의 잦은 data movement/comunication이라고 본다. 즉, Memory-bound를 해결하기 위해 off-chip data movement를 최대한 줄이려고 한다. 그 방법으로, eDRAM을 computation logic 근처에 위치시킨다. 여러 design 철학, data movement path 등을 확인할 수 있다. CNN layer에서 CONV, POOL, LRN과 CLASS가 가지는 특성에 따른 speedup 차이의 이유를 확인할 수 있다.
 
-## 2. Problem
+# 2. Problem
 {: #section-2 }
 
 GPU, NN accelerator for Deep Learning은 neural network size limitation이 존재한다. 신경망이 거대해 지기 시작하며 intermediate values가 main memory에 저장될 때, data movement로 인한 power, latency 손해가 발생한다. Off-chip memory와의 통신이 많아질 수록 memory access가 performance bottleneck이 된다.
 
-## 3. Core Idea
+# 3. Core Idea
 {: #section-3 }
 
 Off-chip data movement(access)을 줄이기 위해 weight를 각 node의 on-chip eDRAM에 나누어 보관하는 방법을 택한다. weights 대신 neuron values를 이동시켜 off-chip access와 data movement를 줄이는 방법을 채택한다.
 
-## 4. Architectures & Computation Methods
+# 4. Architectures & Computation Methods
 {: #section-4 }
 
 DianNao accelerator는 GPU성능의 47.91%를 0.53%의 면적으로 구현할 수 있다고 주장한다. 하지만 DianNao의 main limitation은 memory bandwidth이다. 최적의 성능을 내기 위해서는 467.30 GB/s의 bandwidth가 필요하다. 이는 GPU가 제공하는 bandwidth(208GB/s)보다 더 높은 수치이다.
 
-### 4.1 Node Design
+## 4.1 Node Design
 {: #section-5 }
 
 DaDianNao는 memory bandwidth의 문제를** 4가지의 design principle**를 통해 해결한다.
@@ -105,7 +105,7 @@ DaDianNao는 SRAM보다 eDRAM을 사용한다. 그 이유는 방대한 양의 NN
 
 그러나 이렇게 design 했을 때 65,536-bit를 eDRAM ↔ NFU 사이로 이동시켜야 하는데, 이때 필요한 wire의 두께가 NFU보다 크게 되어 wire가 너무 많은 공간을 차지하게 되는 문제가 발생한다. 이를 Figure 4를 통해 그림으로 확인가능하다.
 
-### 4.2 Tile-based Design
+## 4.2 Tile-based Design
 {: #section-6 }
 
 이러한 문제를 해결하기 위해 tile-based design을 채택했다. Figure 5를 통해 확인할 수 있다. 하나의 node에 16개의 tile과 central eDRAM, 그리고 하나의 tile에 4개의 tile eDRAM과 NFU로 구성된다. Tile 들은 “fat tree”를 통해 연결되어 input neurons를 공유한다.
@@ -124,7 +124,7 @@ Many-node systems의 경우 상당한 양의 input neurons, weight의 MAC operat
 
   \*HT2.0 IP blocks: 한 방향의 bandwidth는 6.4GB/s, latency는 80ns.
 
-### 4.3 Multi-Node Mapping
+## 4.3 Multi-Node Mapping
 {: #section-7 }
 
 input을 node에 mapping하는 방식과 inter-node communication pattern은 layer type에 따라 달라진다.
@@ -150,16 +150,22 @@ Layer case에 따라 node 내부에서의 data movement만으로 연산이 가�
 3개의 main layer cases를 통해 어떤식으로 data가 mapping/communication되는지 확인할 수 있다.
 
 1. **CONV/POOL**
-  : CONV/POOL layer는 “local connectivity”의 성질을 가지기에, 대부분 node 내부에 존재하는 data로 연산이 가능하다. Boundary 외부의 data가 필요할 때만 외부 node와의 communication이 필요하다. (Figure 8의 red section이 node 0이 output을 만들기 위해 필요한 input neurons data가 위치해 있는 곳이다) 
-2. **LRN**
-  : multi-node mapping에서 같은 spatial position의 모든 feature map이 같은 node에 mapping되기 때문에 node 내부에서 모든 연산이 가능하다. (외부 node와의 communication이 존재하지 않는다.)
-3. **CLASS**
-  : CLASS는 각 output neurons가 모든 input neurons의 값을 사용해야 한다. 즉 FC layer라고 할 수 있다. 그렇기에 각 node에 mapping된 모든 data들을 다 사용해야 하기 때문에, 외부 node와의 communication이 많이 필요하다. 이때, 각 node에 할당된 input block을 옆의 node에 순차적으로 전달하여, 각 node가 모든 input block을 한 번씩 받아서 부분합을 만들도록 하는 방법인, “Computing-and-forwarding communication scheme”을 이용한다.(마치 ring pattern과도 같다)
 
-## 5. Results
+    &#58; CONV/POOL layer는 “local connectivity”의 성질을 가지기에, 대부분 node 내부에 존재하는 data로 연산이 가능하다. Boundary 외부의 data가 필요할 때만 외부 node와의 communication이 필요하다. (Figure 8의 red section이 node 0이 output을 만들기 위해 필요한 input neurons data가 위치해 있는 곳이다) 
+
+2. **LRN**
+
+    &#58; multi-node mapping에서 같은 spatial position의 모든 feature map이 같은 node에 mapping되기 때문에 node 내부에서 모든 연산이 가능하다. (외부 node와의 communication이 존재하지 않는다.)
+
+3. **CLASS**
+
+    &#58; CLASS는 각 output neurons가 모든 input neurons의 값을 사용해야 한다. 즉 FC layer라고 할 수 있다. 그렇기에 각 node에 mapping된 모든 data들을 다 사용해야 하기 때문에, 외부 node와의 communication이 많이 필요하다. 이때, 각 node에 할당된 input block을 옆의 node에 순차적으로 전달하여, 각 node가 모든 input block을 한 번씩 받아서 부분합을 만들도록 하는 방법인, “Computing-and-forwarding communication scheme”을 이용한다.(마치 ring pattern과도 같다)
+
+
+# 5. Results
 {: #section-8 }
 
-### 5.1 Main characteristics
+## 5.1 Main characteristics
 {: #section-9 }
 
 <columns>
@@ -183,7 +189,7 @@ Memory cells(eDRAM)이 전체 chip area의 47.55%, 즉 절반 정도를 차지�
 
 Power consumption of chip에서 HT IP가 소비하는 power는 50.14%로 측정된다. 이를 통해 HT hardware에서 상당한 양의 power를 소모한다는 사실을 확인할 수 있으며, memory bottleneck을 줄인 이후에는 chip-to-chip communication이 새로운 bottleneck이 될 수 있음을 시사한다.
 
-### 5.2 Performance
+## 5.2 Performance
 {: #section-10 }
 
 <figure><img src="/images/papers/dadiannao/07.png" alt="원 논문의 그림" loading="lazy" decoding="async"></figure>
@@ -206,14 +212,14 @@ Figure 12는 DaDianNao가 training 부분에서 GPU와 비교했을 때의 speed
 
 Figure 13, 14는 inference, traning에서 GPU 대비 energy reduction을 보여준다. CONV, POOL, LRN은 node 수가 늘어도 energy benefits이 비교적 안정적이나, CLASS의 경우 node의 수가 증가할 수록 energy reduction의 비율은 줄어든다. 그 이유는 CLASS에서 발생하는 많은 inter-node communication으로 인해 HT IPs에서 소비되는 energy가 증가하기 때문이다.
 
-## 6. Limitation
+# 6. Limitation
 {: #section-11 }
 
 GPU, accelerators는 높은 성능을 내고 있지만, large neural network에서는 memory bandwidth bottleneck이 존재한다. 이를 해결하기 위해 DaDianNao는 multi-chip architecture를 설계하고, off-chip data movement를 줄이기 위해 각 node 내부에 많은 eDRAM을 배치하여 weights를 저장한다. 그러나 system을 scaling하며 node 수가 증가하게 되자 inter-node communication으로 인한 새로운 limitation이 발생한다. 대표적으로 CLASS layer에서는 여러 node에 분산된 input neuron values를 사용해야 하기 때문에 많은 inter-node communication이 발생하며, 이로 인해 HT IPs의 energy consumption과 communication overhead가 증가한다. Bottleneck이 Off-chip memory bandwidth에서 Inter-node communication으로 이동한 것이다.
 
 이러한 문제를 해결하기 위해 기존 2D mesh interconnect 대신 multi-dimensional torus topology를 활용하여 large classifier layer의 scalability를 개선하는 방법이 제시된다.
 
-## 7. Thought & Questions
+# 7. Thought & Questions
 {: #section-12 }
 
 DaDianNao의 핵심 철학은 inference/training에 필요한 weights를 on-chip eDRAM에 최대한 유지하고, neuron values를 이동시킴으로써, off-chip DRAM access를 줄이는 것으로 이해했다. 그러나 weights가 처음 어떤 과정을 통해 각 node, tile의 eDRAM에 배치되는지, 첫 input feature map이 외부에서 어떤 과정을 통해 central eDRAM에 저장되는지 궁금했다.
