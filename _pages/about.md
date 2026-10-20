@@ -17,9 +17,9 @@ excerpt: "KAIST electrical engineering undergraduate interested in energy-effici
 
 ## Selected Paper Notes
 
-<p lang="ko">데이터 이동과 재사용이라는 관점에서 읽은 세 가지 가속기입니다.</p>
+<p lang="ko">AI 가속기의 구조와 데이터 이동을 중심으로 읽고 정리한 논문입니다.</p>
 <ul class="note-list">
-{% assign selected = 'eyeriss,tpu,dadiannao' | split: ',' %}
+{% assign selected = 'accelerator-survey,eyeriss,tpu' | split: ',' %}
 {% for slug in selected %}{% for note in site.paper_notes %}{% if note.url contains slug %}{% include note-list-item.html note=note compact=true %}{% endif %}{% endfor %}{% endfor %}
 </ul>
 <a class="more-link" href="{{ '/paper-notes/' | relative_url }}">View all paper notes →</a>
