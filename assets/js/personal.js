@@ -1,0 +1,1 @@
+document.querySelectorAll('.note-content figure img').forEach(img=>{img.loading='lazy';img.decoding='async';});

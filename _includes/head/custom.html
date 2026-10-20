@@ -1,0 +1,6 @@
+<link rel="icon" type="image/svg+xml" href="{{ '/images/favicon.svg' | relative_url }}">
+<meta name="theme-color" content="#ffffff">
+{% if page.collection == 'paper_notes' %}
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},chtml:{displayAlign:'left'}};</script>
+<script defer src="{{ '/assets/vendor/mathjax/tex-chtml.js' | relative_url }}"></script>
+{% endif %}

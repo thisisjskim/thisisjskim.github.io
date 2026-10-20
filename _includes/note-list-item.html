@@ -1,0 +1,7 @@
+<li class="note-list-item"><article>
+{% if include.compact %}<h3>{% else %}<h2>{% endif %}<a href="{{ include.note.url | relative_url }}">{{ include.note.title | escape }}</a>{% if include.compact %}</h3>{% else %}</h2>{% endif %}
+<p class="paper-byline">{{ include.note.paper_authors | escape }} · <i>{{ include.note.paper_venue | escape }}</i> · {{ include.note.paper_year }}{% if include.note.note_status == 'in-progress' %} <span class="status-badge">In progress</span>{% endif %}</p>
+<p class="note-description" lang="ko">{{ include.note.excerpt | strip_html }}</p>
+<div class="note-tags">{% for topic in include.note.topics %}<span>{{ topic | escape }}</span>{% endfor %}</div>
+<div class="note-list-links"><a href="{{ include.note.url | relative_url }}">Read Notes →</a><a href="{{ include.note.paper_url }}">Original Paper ↗</a></div>
+</article></li>

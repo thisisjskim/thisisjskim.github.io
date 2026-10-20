@@ -1,0 +1,5 @@
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="masthead"><div class="masthead__inner-wrap"><nav class="site-navigation" aria-label="Main navigation">
+<a class="site-name" href="{{ '/' | relative_url }}">Junseo Kim<span>KAIST EE</span></a>
+<div class="site-links">{% for link in site.data.navigation.main %}<a href="{{ link.url | relative_url }}" {% if page.url == link.url or link.url != '/' and page.url contains link.url %}aria-current="page"{% endif %}>{{ link.title }}</a>{% endfor %}</div>
+</nav></div></div>

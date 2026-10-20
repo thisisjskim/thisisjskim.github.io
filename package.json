@@ -1,0 +1,8 @@
+{
+  "name": "junseo-kim-academic-website",
+  "private": true,
+  "scripts": {
+    "build:css": "sass _sass/site-main.scss assets/css/main.css --style=compressed --no-source-map --silence-deprecation=import,global-builtin,color-functions,slash-div,if-function"
+  },
+  "devDependencies": { "sass": "1.105.2" }
+}

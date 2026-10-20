@@ -1,0 +1,12 @@
+---
+title: "Paper Notes"
+permalink: /paper-notes/
+redirect_from:
+  - /publications/
+---
+<p class="collection-intro">Personal reading notes on AI accelerator architectures, data movement, and in-memory computing.</p>
+<p class="collection-intro" lang="ko">관심 있는 논문을 읽고, 핵심 구조와 동작 원리를 제 언어로 정리한 기록입니다. 본문은 한국어를 중심으로 작성했습니다.</p>
+<ul class="note-list">
+{% assign notes = site.paper_notes | sort: 'note_updated' | reverse %}
+{% for note in notes %}{% include note-list-item.html note=note %}{% endfor %}
+</ul>
