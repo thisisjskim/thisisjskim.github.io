@@ -226,7 +226,7 @@ note_toc:
 </table>
 <p>기본적으로 cell array 내부에서 computation을 수행하면 data movement, SA overhead, latency를 줄일 수 있다. 또한 cell array 내부의 parallelism을 활용하여 efficiency를 높이고 latency를 낮출 수 있다. 그러나 그에 따른 trade-off도 존재한다. Analog domain에서 computation을 수행할 때 variation, leakage, non-linearity, signal margin 등의 문제가 발생하며, 이는 accuracy를 낮추는 원인이 된다.</p>
 <h1 id="section-14">6. My Thoughts</h1>
-<p><b>Computation(model) mapping을 어떻게 최적화할 수 있는지</b> 더 깊게 공부해보고 싶었다. 이 논문은 여러 문제를 해결하기 위한 구조적인 접근법을 주로 다룬다고 생각했다. Hybrid Method, 특히 Fig.3(d)를 보며 memory를 어떻게 할당해야 하는지 궁금했다. <b>SLC</b>와 <b>MLC</b> 두 종류의 cell이 있기 때문에 weight data를 이 둘에 나누어 저장해야 한다. Memory를 <b>SLC</b>와 <b>MLC</b>로 효과적으로 나누고 할당하는 방법이 있다면 더 알아보고 싶었다.<br />또한 hybrid approach가 NVM-CIM에서만 다루어진 이유도 궁금했다. DRAM-CIM에서도 서로 다른 cell, computation mode, sensing method를 조합하는 hybrid approach를 구현할 수 있는지 궁금했고, 이러한 방법을 활용한 기존 DRAM-CIM 연구가 있는지도 궁금하다. 그뿐만 아니라, 논문에서는 hybrid approach의 challenge, trade-off를 자세하게 설명하지 않는다. Hybrid architecture를 구현할 때 area, control, mapping, accuracy 측면에서 어떤 문제가 발생하는지도 더 알아보고 싶었다.</p>
+<p><b>Computation(model) mapping을 어떻게 최적화할 수 있는지</b> 더 깊게 공부해보고 싶었다. 이 논문은 여러 문제를 해결하기 위한 구조적인 접근법을 주로 다룬다고 생각했다. Hybrid Method, 특히 Fig.3(d)를 보며 memory를 어떻게 할당해야 하는지 궁금했다. <b>SLC</b>와 <b>MLC</b> 두 종류의 cell이 있기 때문에 weight data를 이 둘에 나누어 저장해야 한다. Memory를 <b>SLC</b>와 <b>MLC</b>로 효과적으로 나누고 할당하는 방법이 있다면 더 알아보고 싶었다.<br />또한 hybrid approach가 NVM-CIM에서만 다루어진 이유도 궁금했다. DRAM-CIM에서도 서로 다른 cell, computation mode, sensing method를 조합하는 hybrid approach를 구현할 수 있는지 궁금했고, 이러한 방법을 활용한 기존 DRAM-CIM 연구가 있는지도 궁금하다. Hybrid architecture를 구현할 때 area, control, mapping, accuracy 측면에서 어떤 challenge, trade-off가 발생하는지 더 알아보고 싶었다.</p>
 <div class="notion-empty" aria-hidden="true">
 
 </div>
